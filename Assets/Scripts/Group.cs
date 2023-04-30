@@ -9,6 +9,9 @@ public class Group : MonoBehaviour
 
     public readonly static string SOP = "SOP";
 
+    //number of bits in coordinate variable
+    public readonly static int maxVariables = 32;
+
     //binary of this representes the coordinates of the group
     uint coordinate;
     //binary of this represents the direction of the group

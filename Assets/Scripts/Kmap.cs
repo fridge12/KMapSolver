@@ -14,7 +14,10 @@ public class Kmap : MonoBehaviour
     //number of variables in the kmap
     public static int variables;
 
-    public GameObject KmapInputs;
+    //this is the input field where the coordinates are inputed
+    public GameObject CoordinatesInput;
+
+    public GameObject VariablesInput;
 
     // Start is called before the first frame update
     void Start()
@@ -29,29 +32,56 @@ public class Kmap : MonoBehaviour
 
         Debug.Log("this is a test");
 
-        // TODO: take input for variables
+      
 
 
         variables = 4;
         Group ob = new Group(1, 8);
-
         Debug.Log(ob.reducedExpression(Group.POS));
         Debug.Log(ob.reducedExpression(Group.SOP));
 
 
     }
 
+    //this method takes input for both the number of variables and the terms of the kmap
     public void inputs()
     {
         Debug.Log("in inputs functions");
+        
+        //text of input field
+        string vars = VariablesInput.GetComponent<InputField>().text;
+        //removing all non digits characters
+        vars = System.Text.RegularExpressions.Regex.Replace(vars, @"\D", "");
+
+        //if vars is empty setting it to 0 so that it'll give 0 variables erro
+        if (vars.Length == 0) vars = "0";
+
+        variables = System.Int32.Parse(vars);
+
+        Debug.Log("Variables" + variables);
+
+        if (variables > Group.maxVariables)
+        {
+            // TODO add popup saying too many variables or something 
+            Debug.Log("too many variables");
+        }
+        else if(variables == 0)
+        {
+            //TODO add popup saying 0 variables does not work
+            Debug.Log("0 variables");
+        }
+
+        //
+        uint maxCoordinate = (uint)System.Math.Pow(2, variables);
 
         //getting text of the InputField
-        string inputs = KmapInputs.GetComponent<InputField>().text;
-        //this is so that all the coordinates can be found in the for loop, without the "." if the string ended in digits it would lead the the last number not being found
-        inputs = inputs + ".";
+        //the + "." is so that all the coordinates can be found in the for loop, without the "." if the string ended in digits it would lead the the last number not being found
+        string inputs = CoordinatesInput.GetComponent<InputField>().text + ".";
+
+
         Debug.Log(inputs);
 
-        //setting it null so that it doesn't detect 0 accidently and so we can use all coordinate up to 2^32 -1
+        //setting it null so that it doesn't detect 0 accidently and so we can use all coordinates up to 2^32 -1
         uint? coordinate = null;
         //seperating the numbers, and creating single groups with each number
         for (int i = 0; i < inputs.Length; i++)
@@ -69,9 +99,19 @@ public class Kmap : MonoBehaviour
             //only if number exists create new single group
             else if(coordinate != null)
             {
-                //TODO create new single group and add to the list
+                //only creating new gruop if coordinate is valid
+                if (coordinate > maxCoordinate)
+                {
+                    Debug.Log("invalid input (value too high )");
+                    //TODO add popup to say value too high
+                }
+                else
+                {
+                    //TODO create new single group and add to the 
+                    Debug.Log(coordinate);
+                }
 
-                Debug.Log(coordinate);
+                //resetting coordinate
                 coordinate = null;
             }
 
@@ -79,6 +119,7 @@ public class Kmap : MonoBehaviour
     }
 
 
+    //function which 
 
     // Function to return the number of set bits in n
     static int countSetBits(int n)
