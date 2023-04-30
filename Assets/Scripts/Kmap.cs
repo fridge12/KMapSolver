@@ -22,25 +22,38 @@ public class Kmap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //filling values in lookup table
-        BitsSetTable256[0] = 0;
-        for (int i = 0; i < 256; i++)
-        {
-            BitsSetTable256[i] = (i & 1) +
-            BitsSetTable256[i / 2];
-        }
-
         Debug.Log("this is a test");
+        lookupTable();
 
-      
+        Group g = new Group(13, 2);
+            ;
+/**
+        groupList.Add(new Group(16,0));
+        groupList.Add(new Group(9,2));
+        groupList.Add(new Group(4,3));
+        groupList.Add(new Group(7,8));
+        groupList.Add(new Group(0, 15));
+        groupList.Add(new Group(14,1));
+        groupList.Add(new Group(8,7));
+        groupList.Add(new Group(5,10));
+        groupList.Add(new Group(3,12));
+        groupList.Add(new Group(13,2));
+        groupList.Add(new Group(4,1));
+        groupList.Add(new Group(4, 2));
 
 
-        variables = 4;
-        Group ob = new Group(1, 8);
-        Debug.Log(ob.reducedExpression(Group.POS));
-        Debug.Log(ob.reducedExpression(Group.SOP));
+        GroupComparer GC = new GroupComparer();
+        groupList.Sort(GC);
+        printGroups();
 
-
+        Debug.Log("found at "+groupList.BinarySearch(g, GC));
+*/
+        /**
+                variables = 4;
+                Group ob = new Group(1, 8);
+                Debug.Log(ob.reducedExpression(Group.POS));
+                Debug.Log(ob.reducedExpression(Group.SOP));
+*/
     }
 
     //this method takes input for both the number of variables and the terms of the kmap
@@ -64,11 +77,13 @@ public class Kmap : MonoBehaviour
         {
             // TODO add popup saying too many variables or something 
             Debug.Log("too many variables");
+            return;
         }
         else if(variables == 0)
         {
             //TODO add popup saying 0 variables does not work
             Debug.Log("0 variables");
+            return;
         }
 
         //
@@ -107,7 +122,8 @@ public class Kmap : MonoBehaviour
                 }
                 else
                 {
-                    //TODO create new single group and add to the 
+                    //TODO create new single group and add to the list
+                    groupList.Add(new Group((uint)coordinate,0));
                     Debug.Log(coordinate);
                 }
 
@@ -116,13 +132,31 @@ public class Kmap : MonoBehaviour
             }
 
         }
+        printGroups();
+    }
+
+    static void lookupTable()
+    {
+        //filling values in lookup table
+        BitsSetTable256[0] = 0;
+        for (int i = 0; i < 256; i++)
+        {
+            BitsSetTable256[i] = (i & 1) +
+            BitsSetTable256[i / 2];
+        }
     }
 
 
-    //function which 
+    //prints the coordinates and directions of the groups in the list.
+    public static void printGroups()
+    {
+        groupList.ForEach(delegate (Group g) {
+            Debug.Log(g.coordinate+" "+ g.direction);
+        });
+    }
 
     // Function to return the number of set bits in n
-    static int countSetBits(int n)
+    public static int countSetBits(int n)
     {
         // the & 0xff is to get only the last byte
         return (BitsSetTable256[n & 0xff] +
@@ -130,7 +164,15 @@ public class Kmap : MonoBehaviour
                 BitsSetTable256[(n >> 16) & 0xff] +
                 BitsSetTable256[n >> 24]);
     }
-    
+    public static int countSetBits(uint n)
+    {
+        // the & 0xff is to get only the last byte
+        return (BitsSetTable256[n & 0xff] +
+                BitsSetTable256[(n >> 8) & 0xff] +
+                BitsSetTable256[(n >> 16) & 0xff] +
+                BitsSetTable256[n >> 24]);
+    }
+
     //these functions print the bits of an int and uint
     public static  void printBits(int n)
     {

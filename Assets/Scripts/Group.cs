@@ -13,15 +13,15 @@ public class Group : MonoBehaviour
     public readonly static int maxVariables = 32;
 
     //binary of this representes the coordinates of the group
-    uint coordinate;
+    public uint coordinate;
     //binary of this represents the direction of the group
-    uint direction;
+    public uint direction;
     //number of bigger groups this group is a part of
-    uint biggerGroups;
+    public uint biggerGroups;
 
     //probably won't use these 2
-    uint subGroup1Index;
-    uint subGroup2Index;
+    public uint subGroup1Index;
+    public uint subGroup2Index;
 
     //all the info is there, including subgroups which i might not use
     public Group(uint coordinate, uint direction, uint biggerGroups, uint subGroup1Index,uint subGroup2Index)
