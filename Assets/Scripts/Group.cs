@@ -9,10 +9,12 @@ public class Group : MonoBehaviour
 
     public readonly static string SOP = "SOP";
 
-    //number of bits in coordinate variable
-    public readonly static int maxVariables = 32;
+    //theoretically it should be the number of non sign bits in coordinate variable
+    //but because the List<T> class methods use int as a return type the max is 31
+    public readonly static int maxVariables = 31;
 
     //binary of this representes the coordinates of the group
+    //each bit is a different dimension
     public uint coordinate;
     //binary of this represents the direction of the group
     public uint direction;
@@ -49,6 +51,7 @@ public class Group : MonoBehaviour
     {
     }
 
+    //returnes the reduced expression of the group
     public string reducedExpression(string expressionType)
     { 
         string exp = "";
@@ -102,7 +105,10 @@ public class Group : MonoBehaviour
             }
         }
 
+        //returning reduced expression
         return exp;
     }
 
+
+    
 }

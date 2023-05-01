@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 public class Kmap : MonoBehaviour
 {
-    //lookup table for number of bits in uint
-    static int[] BitsSetTable256 = new int[256];
+    
 
     //list that holds all the groups in the kmap
-    static List<Group> groupList = new List<Group>();
+    static List<Group> groupsList = new List<Group>();
 
     //number of variables in the kmap
     public static int variables;
@@ -23,7 +22,7 @@ public class Kmap : MonoBehaviour
     void Start()
     {
         Debug.Log("this is a test");
-        lookupTable();
+        BitOperations.fillLookupTable();
 
         Group g = new Group(13, 2);
             ;
@@ -59,6 +58,10 @@ public class Kmap : MonoBehaviour
     //this method takes input for both the number of variables and the terms of the kmap
     public void inputs()
     {
+        //resetting group list and variables so that previous input is not saved
+        groupsList.Clear();
+        variables = 0;
+
         Debug.Log("in inputs functions");
         
         //text of input field
@@ -122,8 +125,8 @@ public class Kmap : MonoBehaviour
                 }
                 else
                 {
-                    //TODO create new single group and add to the list
-                    groupList.Add(new Group((uint)coordinate,0));
+                    //creates a new single gorup and adds it to the list
+                    groupsList.Add(new Group((uint)coordinate,0));
                     Debug.Log(coordinate);
                 }
 
@@ -132,87 +135,76 @@ public class Kmap : MonoBehaviour
             }
 
         }
-        printGroups();
+        //printGroupsList();
+        //sorting the list 
+        groupsList.Sort(new GroupComparer());
+        //printGroupsList();
     }
 
-    static void lookupTable()
+
+
+    public static void findingPairs()
     {
-        //filling values in lookup table
-        BitsSetTable256[0] = 0;
-        for (int i = 0; i < 256; i++)
-        {
-            BitsSetTable256[i] = (i & 1) +
-            BitsSetTable256[i / 2];
-        }
-    }
+        //group object which will be show which group is being searched for
+        //creating object and modifying it so that a new object isn't created everytime an object is being searched for
+        Group groupSearch = new Group(0, 0);
+
+        // don't want to create new object each time
+        GroupComparer GC = new GroupComparer();
+
+        //iterating through the list
+        groupsList.ForEach  (delegate (Group g){
+        
+            //all the neighbouring coordinates check 
+            for( int i = 0; i < variables; i++)
+            {
+                /*
+                 * a bigger group can be formed if there are two groups with
+                 *      1. same number of terms
+                 *      2. same direction
+                 *      3. a difference in only 1 dimension of the coordinates
+                */
+
+
+                //this is used to check the coordinates that are one away from the coordinate of g
+                uint shiftDirection = (uint) 1 << i;
+
+                //setting the coordinate to a neighbouring coordinate in the direction of shiftDirection
+                groupSearch.coordinate = g.coordinate | shiftDirection;
+
+                //directions of both the groups should be same
+                groupSearch.direction = g.direction;
+
+                //if the coordinates didn't change it would be searching for the current group g
+                if (groupSearch.coordinate == g.coordinate) continue;
+
+                //index of the pair which can combine with g to make a bigger group
+                int pairIndex = groupsList.BinarySearch(groupSearch, GC);
+
+                //adding a new group to the list whose coordinate is the lower coordinate of the two groups
+                // and whose direction is the combination of the directino of both the groups
+                groupsList.Add(new Group(g.coordinate , g.direction | groupsList[pairIndex].direction));
+
+                //incrementing bigger groups
+                g.biggerGroups++;
+                groupsList[pairIndex].biggerGroups++;
+                }
+
+            //TODO delete group if it meets condition
+        
+        });
+
+    } 
 
 
     //prints the coordinates and directions of the groups in the list.
-    public static void printGroups()
+    public static void printGroupsList()
     {
-        groupList.ForEach(delegate (Group g) {
+        groupsList.ForEach(delegate (Group g) {
             Debug.Log(g.coordinate+" "+ g.direction);
         });
     }
 
-    // Function to return the number of set bits in n
-    public static int countSetBits(int n)
-    {
-        // the & 0xff is to get only the last byte
-        return (BitsSetTable256[n & 0xff] +
-                BitsSetTable256[(n >> 8) & 0xff] +
-                BitsSetTable256[(n >> 16) & 0xff] +
-                BitsSetTable256[n >> 24]);
-    }
-    public static int countSetBits(uint n)
-    {
-        // the & 0xff is to get only the last byte
-        return (BitsSetTable256[n & 0xff] +
-                BitsSetTable256[(n >> 8) & 0xff] +
-                BitsSetTable256[(n >> 16) & 0xff] +
-                BitsSetTable256[n >> 24]);
-    }
-
-    //these functions print the bits of an int and uint
-    public static  void printBits(int n)
-    {
-
-        //print bits
-
-        string s = "";
-
-        for(int i = 31; i >= 0; i--)
-        {
-            if(((n >> i)& 1) == 1)
-            {
-                s = s + "1";
-            }
-            else
-            {
-                s = s + "0";
-            }
-        }
-        Debug.Log(s);
-    }
-    public static void printBits(uint n)
-    {
-
-        //print bits
-
-        string s = "";
-
-        for (int i = 31; i >= 0; i--)
-        {
-            if (((n >> i) & 1) == 1)
-            {
-                s = s + "1";
-            }
-            else
-            {
-                s = s + "0";
-            }
-        }
-        Debug.Log(s);
-    }
+ 
 
 }
