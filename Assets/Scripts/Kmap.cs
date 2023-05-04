@@ -8,10 +8,12 @@ public class Kmap : MonoBehaviour
     
 
     //list that holds all the groups in the kmap
-    static List<Group> groupsList = new List<Group>();
+    public static List<Group> groupsList = new List<Group>();
 
     //number of variables in the kmap
     public static int variables;
+    //highest value for a term
+    public static uint maxCoordinate;
 
     //this is the input field where the coordinates are inputed
     public GameObject CoordinatesInput;
@@ -24,8 +26,8 @@ public class Kmap : MonoBehaviour
         Debug.Log("this is a test");
         BitOperations.fillLookupTable();
 
-        Group g = new Group(13, 2);
-            ;
+
+
 /**
         groupList.Add(new Group(16,0));
         groupList.Add(new Group(9,2));
@@ -89,8 +91,8 @@ public class Kmap : MonoBehaviour
             return;
         }
 
-        //
-        uint maxCoordinate = (uint)System.Math.Pow(2, variables);
+        // highest value for a term
+        maxCoordinate = (uint)System.Math.Pow(2, variables)-1;
 
         //getting text of the InputField
         //the + "." is so that all the coordinates can be found in the for loop, without the "." if the string ended in digits it would lead the the last number not being found
@@ -138,13 +140,19 @@ public class Kmap : MonoBehaviour
         //printGroupsList();
         //sorting the list 
         groupsList.Sort(new GroupComparer());
+        Debug.Log("groups list after input and sorting");
         //printGroupsList();
+
+        //finding pairs
+        findingPairs();
     }
 
 
-
+    //creates groups
     public static void findingPairs()
     {
+        Debug.Log("finding pairs");
+
         //group object which will be show which group is being searched for
         //creating object and modifying it so that a new object isn't created everytime an object is being searched for
         Group groupSearch = new Group(0, 0);
@@ -152,11 +160,19 @@ public class Kmap : MonoBehaviour
         // don't want to create new object each time
         GroupComparer GC = new GroupComparer();
 
+        Group g;
+        Group gPair;
+        //index of g
+        int index = 0;
+
+        int size = groupsList.Count;
+
         //iterating through the list
-        groupsList.ForEach  (delegate (Group g){
-        
+        for(index =0;index < size;index++){
+            g = groupsList[index];
+
             //all the neighbouring coordinates check 
-            for( int i = 0; i < variables; i++)
+            for (int i = 0; i < variables; i++)
             {
                 /*
                  * a bigger group can be formed if there are two groups with
@@ -167,7 +183,7 @@ public class Kmap : MonoBehaviour
 
 
                 //this is used to check the coordinates that are one away from the coordinate of g
-                uint shiftDirection = (uint) 1 << i;
+                uint shiftDirection = (uint)1 << i;
 
                 //setting the coordinate to a neighbouring coordinate in the direction of shiftDirection
                 groupSearch.coordinate = g.coordinate | shiftDirection;
@@ -175,36 +191,174 @@ public class Kmap : MonoBehaviour
                 //directions of both the groups should be same
                 groupSearch.direction = g.direction;
 
-                //if the coordinates didn't change it would be searching for the current group g
-                if (groupSearch.coordinate == g.coordinate) continue;
+
+                //if the coordinates didn't change it would be searching for the current group g, so skipping this iteration
+                if (groupSearch.coordinate == g.coordinate) { continue; }
 
                 //index of the pair which can combine with g to make a bigger group
                 int pairIndex = groupsList.BinarySearch(groupSearch, GC);
 
-                //adding a new group to the list whose coordinate is the lower coordinate of the two groups
-                // and whose direction is the combination of the directino of both the groups
-                groupsList.Add(new Group(g.coordinate , g.direction | groupsList[pairIndex].direction));
+                //if pair does not exist go to the top of the loop
+                if (pairIndex < 0) { continue; }
 
-                //incrementing bigger groups
-                g.biggerGroups++;
-                groupsList[pairIndex].biggerGroups++;
+
+
+                groupSearch.coordinate = g.coordinate;
+                groupSearch.direction = g.direction | shiftDirection;
+
+                Debug.Log("found pair");
+                //groupSearch.printGroup();
+                //if a duplicate group does not exist then
+                if (groupsList.BinarySearch(groupSearch, GC) < 0)
+                {
+                    //adding a new group to the list whose coordinate is the lower coordinate of the two groups
+                    // and whose direction is the combination of the direction of both the groups
+                    groupsList.Add(new Group(g.coordinate, g.direction | shiftDirection));
+                    size++;
+                    groupSearch.updateBiggerGroups(+1);
+
+                }
+                else
+                {
+                    //groupSearch.printGroup();
+                    //groupSearch.updateBiggerGroups(-1);
+                    //groupsList[pairIndex].printGroup();
                 }
 
-            //TODO delete group if it meets condition
-        
-        });
 
+                //Debug.Log("the two groups");
+                //g.printGroup();
+                //groupsList[pairIndex].printGroup();
+
+
+                //incrementing biggerGroups, of groups with more than one term
+                if (BitOperations.countSetBits(g.direction) > 0) { 
+                    g.biggerGroups++;
+                    groupsList[pairIndex].biggerGroups++;
+                }
+
+            }
+
+            //if it is not a single and part of a bigger group, deleting the group
+            if (g.direction != 0 && g.biggerGroups > 0)
+                {
+                g.updateBiggerGroups(-1);
+                groupsList.RemoveAt(index);
+                index--;
+                size--;
+
+                //Debug.Log("final value of group");
+                //g.printGroup();
+                }
+            
+        }
+        //Debug.Log("groups list after finding pairs");
+        //printGroupsList();
+        //printGroupsListWithoutRedundantGroups();
+        
+        //calling method to delete redundant groups
+        deleteRedundantGroups();
     } 
 
+    public static void deleteRedundantGroups()
+    {
+        Debug.Log("deleting redundant groups");
 
-    //prints the coordinates and directions of the groups in the list.
+        Group g;
+
+        //index of g
+        int index = 0;
+
+        int size = groupsList.Count;
+        //iterating through the list
+        for (index = 0; index < size; index++)
+        {
+            g = groupsList[index];
+
+            //a single is not redundant
+            if (BitOperations.countSetBits(g.direction) == 0) continue;
+
+            //if group is redundant deleting it
+            if (g.isRedundant())
+            {
+                
+                //Debug.Log("found redundant");
+                //g.printGroup();
+                
+                //deleting group and updating the size and index to match
+                groupsList.RemoveAt(index);
+                size--;
+                index--;
+            }
+
+        }
+        //Debug.Log("groups list after removing redundant groups");
+        //printGroupsList();
+        //printGroupsListWithoutRedundantGroups();
+
+        reducedExpression(Group.POS);
+        reducedExpression(Group.SOP);
+    }
+
+
+    public static void reducedExpression(string SOP_POS)
+    {
+        //using string builder because when using a string, every modification creates a new string
+        System.Text.StringBuilder expression = new System.Text.StringBuilder("");
+
+        //tell us whether to include + or . before a term
+        bool isNotStart = false;
+
+        Group g;
+
+        //index of g
+        int index = 0;
+
+        int size = groupsList.Count;
+        //iterating through the list
+        for (index = 0; index < size; index++)
+        {
+            g = groupsList[index];
+            //if the group is a part of a bigger group then its reduced expression is not to be included
+            if (g.biggerGroups != 0) continue;
+
+
+            if (SOP_POS.Equals(Group.SOP))
+            {
+                if (isNotStart) expression.Append(" + ");
+                expression.Append(g.reducedExpression(Group.SOP));
+                isNotStart = true;
+            }
+            else
+            {
+                if (isNotStart) expression.Append(" . ");
+                expression.Append("(" + g.reducedExpression(Group.POS) + ")");
+                isNotStart = true;
+                
+            }
+
+        }
+        Debug.Log(expression);
+
+    }
+
+
+    //prints the coordinates and number of terms of the groups in the list.
     public static void printGroupsList()
     {
+        Debug.Log("Groups list with redundant groups");
         groupsList.ForEach(delegate (Group g) {
-            Debug.Log(g.coordinate+" "+ g.direction);
+            g.printGroup();
         });
     }
 
- 
+    //prints the coordinates and directions of the groups in the list.
+    public static void printGroupsListWithoutRedundantGroups()
+    {
+        Debug.Log("groups list without redundant groups");
+        groupsList.ForEach(delegate (Group g) {
+            if(g.biggerGroups == 0) g.printGroup();
+        });
+    }
 
 }

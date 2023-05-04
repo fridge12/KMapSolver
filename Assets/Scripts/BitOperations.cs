@@ -59,7 +59,7 @@ public class BitOperations : MonoBehaviour
         }
         Debug.Log(s);
     }
-    public static void printBits(uint n)
+    public static string printBits(uint n)
     {
 
         //print bits
@@ -77,6 +77,6 @@ public class BitOperations : MonoBehaviour
                 s = s + "0";
             }
         }
-        Debug.Log(s);
+        return s;
     }
 }

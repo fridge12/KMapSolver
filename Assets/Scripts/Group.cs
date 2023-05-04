@@ -55,9 +55,10 @@ public class Group : MonoBehaviour
     public string reducedExpression(string expressionType)
     { 
         string exp = "";
-        Debug.Log("reducing expresion");
-        
-        
+        //Debug.Log("reducing expresion");
+
+        if (direction == Kmap.maxCoordinate) return "1";
+
         for(int i = Kmap.variables-1; i >= 0; i--)
         {
 
@@ -109,6 +110,77 @@ public class Group : MonoBehaviour
         return exp;
     }
 
+    public bool isRedundant()
+    {
+        Debug.Log("in isRedundant");
+        //printGroup();
 
+        Group groupSearch = new Group(0, 0);
+        GroupComparer GC = new GroupComparer();
+
+        /*
+         *the coordinates of all the singles in a group can be found with
+         *          coordinate | ((direction -1) & direction)
+         *          coordinate | ((((direction -1) & direction) -1 ) & direction)
+         *                      .
+         *                      .
+         *                      .
+         *                      .
+         *          repeat n times
+         *          n = number of terms in the group
+         */
+
+
+        uint currentDirection = direction;
+        //loops as many times as there are terms in the group
+        for (int i =0;i<System.Math.Pow(2, BitOperations.countSetBits(direction)); i++)
+        {
+            currentDirection = (currentDirection - 1) & direction;
+            groupSearch.coordinate = coordinate | currentDirection;
+
+            //Debug.Log(BitOperations.printBits(groupSearch.coordinate));
+            Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].printGroup();
+            //if any term is not a part of another bigger group then it means this group is not redundant 
+            if (Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups <= 1)return false; 
+        }
+        //if it reaches till here, it means that the group is redundant and will be deleted
+        //if the group is deleted all the terms will be a part of 1 less bigger group
+        //the function updates all the terms, and reduces the bigger groups they are a part of
+
+        updateBiggerGroups(-1);
+        return true;
+        
+    }
+    //this function will update the biggerGroup values for all singles in the group
+    //val is the amount by which the biggerGroup of each single is changed 
+    public void updateBiggerGroups(int val)
+    {
+        Debug.Log("in updating biggerr groups " + val);
+        //Kmap.printGroupsList();
+
+        Group groupSearch = new Group(0, 0);
+        GroupComparer GC = new GroupComparer();
+
+        
+        uint currentDirection = direction;
+        //loops as many times as there are terms in the group
+        for (int i = 0; i < System.Math.Pow(2, BitOperations.countSetBits(direction)); i++)
+        {
+            currentDirection = (currentDirection - 1) & direction;
+            groupSearch.coordinate = coordinate | currentDirection;
+            //Debug.Log(BitOperations.printBits(groupSearch.coordinate));
+
+            //updating the number of bigger groups the term is a part of
+           if(val< 0) Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups -= (uint)System.Math.Abs(val);
+           else Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups += (uint)System.Math.Abs(val);
+        }
+        //Debug.Log("groups list aftre updating bigger groups");
+        //Kmap.printGroupsList();
+    }
+
+    public void printGroup()
+    {
+        Debug.Log(coordinate + " " + BitOperations.printBits(direction) + " "+ biggerGroups);
+    }
     
 }
