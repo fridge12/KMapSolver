@@ -889,7 +889,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 26}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &916681202
@@ -1272,7 +1272,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: p
+  m_Text: "\u2211"
 --- !u!222 &1068082401
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1501,7 +1501,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1263820157
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1779,7 +1779,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1598807843}
         m_TargetAssemblyTypeName: Kmap, Assembly-CSharp
-        m_MethodName: inputs
+        m_MethodName: onInputButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2291,6 +2291,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CoordinatesInput: {fileID: 1567928700}
   VariablesInput: {fileID: 504872214}
+  Dropdown: {fileID: 1263820156}
+  termsText: {fileID: 1068082398}
 --- !u!114 &1598807844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2303,6 +2305,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b730ff4c8adb64b9efadde808ca1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coordinate: 0
+  direction: 0
+  biggerGroups: 0
+  subGroup1Index: 0
+  subGroup2Index: 0
 --- !u!1 &1756432841
 GameObject:
   m_ObjectHideFlags: 0

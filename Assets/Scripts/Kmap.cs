@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Kmap : MonoBehaviour
 {
@@ -15,10 +16,19 @@ public class Kmap : MonoBehaviour
     //highest value for a term
     public static uint maxCoordinate;
 
+    public static string SOP_POS ="";
+
     //this is the input field where the coordinates are inputed
     public GameObject CoordinatesInput;
 
+    //input field where number of variables are inputted
     public GameObject VariablesInput;
+
+    //dropdown menu to select SOP or POS
+    public GameObject Dropdown;
+
+    //this will be either ∑ or π depending on whether SOP or POS is selected
+    public GameObject termsText;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +65,31 @@ public class Kmap : MonoBehaviour
                 Debug.Log(ob.reducedExpression(Group.POS));
                 Debug.Log(ob.reducedExpression(Group.SOP));
 */
+    }
+
+    void Update()
+    {
+        SOP_POS = Dropdown.GetComponent<Dropdown>().captionText.text;
+        if (SOP_POS == Group.POS)
+            termsText.GetComponent<Text>().text = "π";
+        else
+            termsText.GetComponent<Text>().text = "∑";
+    }
+
+    public void onInputButtonClick()
+    {
+        //taking and sorting inputs
+        inputs();
+
+        //finding pairs
+        findingPairs();
+
+        //calling method to delete redundant groups
+        deleteRedundantGroups();
+
+        //to print the final reduced expression
+        reducedExpression();
+        
     }
 
     //this method takes input for both the number of variables and the terms of the kmap
@@ -143,8 +178,11 @@ public class Kmap : MonoBehaviour
         Debug.Log("groups list after input and sorting");
         //printGroupsList();
 
-        //finding pairs
-        findingPairs();
+        //getting the selection made by the user
+        //have to do captionText.text because captionText returns the text component and not a string of text 
+        
+
+
     }
 
 
@@ -232,6 +270,8 @@ public class Kmap : MonoBehaviour
 
 
                 //incrementing biggerGroups, of groups with more than one term
+                //because singles are updated whenever a bigger group is created with the updateBiggerGroups function
+                //so if we were to increment biggerGroups for singles we would be double counting groups
                 if (BitOperations.countSetBits(g.direction) > 0) { 
                     g.biggerGroups++;
                     groupsList[pairIndex].biggerGroups++;
@@ -256,8 +296,7 @@ public class Kmap : MonoBehaviour
         //printGroupsList();
         //printGroupsListWithoutRedundantGroups();
         
-        //calling method to delete redundant groups
-        deleteRedundantGroups();
+        
     } 
 
     public static void deleteRedundantGroups()
@@ -296,13 +335,15 @@ public class Kmap : MonoBehaviour
         //printGroupsList();
         //printGroupsListWithoutRedundantGroups();
 
-        reducedExpression(Group.POS);
-        reducedExpression(Group.SOP);
+        
     }
 
 
-    public static void reducedExpression(string SOP_POS)
+    public static void reducedExpression()
     {
+        printGroupsListWithoutRedundantGroups();
+        groupsList.Sort(new GroupComparer());
+
         //using string builder because when using a string, every modification creates a new string
         System.Text.StringBuilder expression = new System.Text.StringBuilder("");
 
