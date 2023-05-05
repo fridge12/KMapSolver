@@ -7,6 +7,10 @@ using UnityEngine.UIElements;
 public class Kmap : MonoBehaviour
 {
     
+    //if false this doesn't allow debug statements to print
+    public static readonly bool toPrint = false;
+    //keep false unless debugging as it adds way to much time for any slightly big input
+
 
     //list that holds all the groups in the kmap
     public static List<Group> groupsList = new List<Group>();
@@ -78,18 +82,45 @@ public class Kmap : MonoBehaviour
 
     public void onInputButtonClick()
     {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+       
+        
+        /*
+         * for(int i =0;i<100000;i++)
+        if(toPrint)Debug.Log("this is another test");
+        watch.Stop();
+        Debug.Log("time test" + watch.ElapsedMilliseconds);
+        watch.Reset();
+        watch.Restart();
+        */
+
+
         //taking and sorting inputs
         inputs();
+        watch.Stop();
+        Debug.Log("time input"+ watch.ElapsedMilliseconds);
 
+        watch.Reset();
+        watch.Restart();
         //finding pairs
         findingPairs();
+        watch.Stop();
+        Debug.Log("time pairs" + watch.ElapsedMilliseconds);
 
+
+        watch.Reset();
+        watch.Restart();
         //calling method to delete redundant groups
         deleteRedundantGroups();
+        watch.Stop();
+        Debug.Log("time redundant" + watch.ElapsedMilliseconds);
 
+        watch.Reset();
+        watch.Restart();
         //to print the final reduced expression
         reducedExpression();
-        
+        watch.Stop();
+        Debug.Log("time reduced" + watch.ElapsedMilliseconds);
     }
 
     //this method takes input for both the number of variables and the terms of the kmap
@@ -164,7 +195,7 @@ public class Kmap : MonoBehaviour
                 {
                     //creates a new single gorup and adds it to the list
                     groupsList.Add(new Group((uint)coordinate,0));
-                    Debug.Log(coordinate);
+                    if (toPrint) Debug.Log(coordinate);
                 }
 
                 //resetting coordinate
@@ -244,7 +275,7 @@ public class Kmap : MonoBehaviour
                 groupSearch.coordinate = g.coordinate;
                 groupSearch.direction = g.direction | shiftDirection;
 
-                Debug.Log("found pair");
+                if (toPrint) Debug.Log("found pair");
                 //groupSearch.printGroup();
                 //if a duplicate group does not exist then
                 if (groupsList.BinarySearch(groupSearch, GC) < 0)

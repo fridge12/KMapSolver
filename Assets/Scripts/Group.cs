@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Group : MonoBehaviour
+public class Group
 {
 
     public readonly static string POS = "POS";
@@ -112,7 +112,7 @@ public class Group : MonoBehaviour
 
     public bool isRedundant()
     {
-        Debug.Log("in isRedundant");
+        if (Kmap.toPrint) Debug.Log("in isRedundant");
         //printGroup();
 
         Group groupSearch = new Group(0, 0);
@@ -139,7 +139,7 @@ public class Group : MonoBehaviour
             groupSearch.coordinate = coordinate | currentDirection;
 
             //Debug.Log(BitOperations.printBits(groupSearch.coordinate));
-            Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].printGroup();
+            if (Kmap.toPrint) Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].printGroup();
             //if any term is not a part of another bigger group then it means this group is not redundant 
             if (Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups <= 1)return false; 
         }
@@ -155,7 +155,7 @@ public class Group : MonoBehaviour
     //val is the amount by which the biggerGroup of each single is changed 
     public void updateBiggerGroups(int val)
     {
-        Debug.Log("in updating biggerr groups " + val);
+        if (Kmap.toPrint) Debug.Log("in updating biggerr groups " + val);
         //Kmap.printGroupsList();
 
         Group groupSearch = new Group(0, 0);
