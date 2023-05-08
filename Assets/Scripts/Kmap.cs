@@ -40,35 +40,6 @@ public class Kmap : MonoBehaviour
         Debug.Log("this is a test");
         BitOperations.fillLookupTable();
 
-
-
-/**
-        groupList.Add(new Group(16,0));
-        groupList.Add(new Group(9,2));
-        groupList.Add(new Group(4,3));
-        groupList.Add(new Group(7,8));
-        groupList.Add(new Group(0, 15));
-        groupList.Add(new Group(14,1));
-        groupList.Add(new Group(8,7));
-        groupList.Add(new Group(5,10));
-        groupList.Add(new Group(3,12));
-        groupList.Add(new Group(13,2));
-        groupList.Add(new Group(4,1));
-        groupList.Add(new Group(4, 2));
-
-
-        GroupComparer GC = new GroupComparer();
-        groupList.Sort(GC);
-        printGroups();
-
-        Debug.Log("found at "+groupList.BinarySearch(g, GC));
-*/
-        /**
-                variables = 4;
-                Group ob = new Group(1, 8);
-                Debug.Log(ob.reducedExpression(Group.POS));
-                Debug.Log(ob.reducedExpression(Group.SOP));
-*/
     }
 
     void Update()
@@ -82,6 +53,7 @@ public class Kmap : MonoBehaviour
 
     public void onInputButtonClick()
     {
+        //for timing each method
         var watch = System.Diagnostics.Stopwatch.StartNew();
        
         
@@ -287,18 +259,6 @@ public class Kmap : MonoBehaviour
                     groupSearch.updateBiggerGroups(+1);
 
                 }
-                else
-                {
-                    //groupSearch.printGroup();
-                    //groupSearch.updateBiggerGroups(-1);
-                    //groupsList[pairIndex].printGroup();
-                }
-
-
-                //Debug.Log("the two groups");
-                //g.printGroup();
-                //groupsList[pairIndex].printGroup();
-
 
                 //incrementing biggerGroups, of groups with more than one term
                 //because singles are updated whenever a bigger group is created with the updateBiggerGroups function

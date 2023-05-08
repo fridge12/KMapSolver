@@ -21,23 +21,6 @@ public class Group
     //number of bigger groups this group is a part of
     public uint biggerGroups;
 
-    //probably won't use these 2
-    public uint subGroup1Index;
-    public uint subGroup2Index;
-
-    //all the info is there, including subgroups which i might not use
-    public Group(uint coordinate, uint direction, uint biggerGroups, uint subGroup1Index,uint subGroup2Index)
-    {
-        this.coordinate = coordinate;
-        this.direction = direction;
-        this.biggerGroups = biggerGroups;
-        this.subGroup1Index = subGroup1Index;
-        this.subGroup2Index = subGroup2Index;
-    }
-    //if i am going to use subgroups, then I will use this to create a new Group
-    public Group(uint coordinate, uint direction, uint subGroup1Index, uint subGroup2Index) : this(coordinate, direction, 0, subGroup1Index, subGroup2Index)
-    {}
-
 
     //this is the base constructor if I don't use subgroups
     public Group(uint coordinate, uint direction,uint biggerGroups)
@@ -53,8 +36,8 @@ public class Group
 
     //returnes the reduced expression of the group
     public string reducedExpression(string expressionType)
-    { 
-        string exp = "";
+    {
+        System.Text.StringBuilder exp = new System.Text.StringBuilder("");
         //Debug.Log("reducing expresion");
 
         if (direction == Kmap.maxCoordinate) return "1";
@@ -62,10 +45,10 @@ public class Group
         for(int i = Kmap.variables-1; i >= 0; i--)
         {
 
-            //    0 0 0 0   corresponding bits
+            //    0 0 0 0   corresponding bits (direction)
             //    A B C D   variables
-            //the variable is present in the final expression if the corresponding bit is 0 
-            //the corresponding bit shows the value of the variable at the coordinate
+            //the variable is present in the final expression if the corresponding bit in direction is 0 
+            //the corresponding bit in direction shows the value of the variable at the coordinate
 
             if (((direction >> i) & 1) == 0)
             {
@@ -76,27 +59,27 @@ public class Group
                     //if it is a pos expression adding + in between the variables
                     if (exp.Length > 0)
                     {
-                        exp = exp + "+";
+                        exp = exp.Append("+");
                     }
 
                     // adding variable to the expression
-                    exp = exp + (char)(64 + Kmap.variables - i);
+                    exp = exp.Append( (char)(64 + Kmap.variables - i));
 
                     //if the value of the bit corresponding to the variable is 1 complementing it
                     if (((coordinate >> i) & 1) == 1)
                     {
-                        exp = exp + "'";
+                        exp = exp.Append("'");
                     }
                 }
                 else if(expressionType == SOP)
                 {
                     //adding variable to the expression
-                    exp = exp + (char)(64 + Kmap.variables - i);
+                    exp = exp.Append((char)(64 + Kmap.variables - i));
 
                     //if the value of the bit corresponding to the variable is 0 complementing it
                     if (((coordinate >> i) & 1) == 0)
                     {
-                        exp = exp + "'";
+                        exp = exp.Append("'");
                     }
                 }
                 else
@@ -107,7 +90,7 @@ public class Group
         }
 
         //returning reduced expression
-        return exp;
+        return exp.ToString();
     }
 
     public bool isRedundant()
