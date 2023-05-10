@@ -34,6 +34,8 @@ public class Kmap : MonoBehaviour
     //this will be either ∑ or π depending on whether SOP or POS is selected
     public GameObject termsText;
 
+    //text object in which the final reduced expression will be displayed
+    public GameObject ReducedExpressionOutput;
     // Start is called before the first frame update
     void Start()
     {
@@ -90,7 +92,8 @@ public class Kmap : MonoBehaviour
         watch.Reset();
         watch.Restart();
         //to print the final reduced expression
-        reducedExpression();
+
+        ReducedExpressionOutput.GetComponent<Text>().text = reducedExpression();
         watch.Stop();
         Debug.Log("time reduced" + watch.ElapsedMilliseconds);
     }
@@ -330,7 +333,7 @@ public class Kmap : MonoBehaviour
     }
 
 
-    public static void reducedExpression()
+    public static string reducedExpression()
     {
         printGroupsListWithoutRedundantGroups();
         groupsList.Sort(new GroupComparer());
@@ -371,7 +374,7 @@ public class Kmap : MonoBehaviour
 
         }
         Debug.Log(expression);
-
+        return expression.ToString();
     }
 
 
