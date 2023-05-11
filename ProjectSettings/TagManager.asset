@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - KMapInput
+  - Term
+  - Expression
+  - Group
   layers:
   - Default
   - TransparentFX

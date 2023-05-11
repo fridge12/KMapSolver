@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2411272874388667199}
   - component: {fileID: 8519722379600401811}
   m_Layer: 0
-  m_Name: OutputCell
+  m_Name: TermCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 1
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
