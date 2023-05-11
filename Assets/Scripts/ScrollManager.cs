@@ -9,12 +9,15 @@ public class ScrollManager : MonoBehaviour
     public int xScrollMultiplyer;
     public int yScrollMultiplyer;
 
-    //these many pixels of the game object will always be visible
+    //these many pixels of the game object will always be visible 
+    //these pixels are canvas pixels and thus need to be scaled
     public float xVisible;
     public float yVisible;
 
-    float xStart;
-    float yStart;
+    //starting coordinates for the gameObject
+    //we are assuming this is as far up as the gameobject can scroll
+    public float xStart;
+    public float yStart;
 
     Vector2 size;
 
@@ -28,14 +31,14 @@ public class ScrollManager : MonoBehaviour
         Debug.Log("width "+size.x);
         Debug.Log("height "+size.y);
 
-        xStart = scroll.transform.position.x;
-        yStart = scroll.transform.position.y;
 
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        //if the size of the gameobject changes updating the size
         if(RT.sizeDelta != size)
         {
             size = RT.sizeDelta;
@@ -43,23 +46,34 @@ public class ScrollManager : MonoBehaviour
             Debug.Log("height "+size.y);
         }
 
+        //taking input from the mouse
         Vector2 mouseScrollInput = Input.mouseScrollDelta;
 
+        //the size of objects within the canvas need to be adjusted as their values are not scaled
+        //their world coordinates however do not need to be scaled
+
+        //if scrolling down
         if(mouseScrollInput.y < 0)
         {
-            if(yStart+size.y-yVisible > scroll.transform.position.y)
+            //making sure that it doesn't keep scrolling down, and that atleast yVisible amount of pixels are visible
+            //if there is room to move down, move down
+            if(ScreenConstants.scale *(yStart + size.y-yVisible) > scroll.transform.position.y)
             {
-                scroll.transform.position = scroll.transform.position + new Vector3(0, Input.mouseScrollDelta.y * -yScrollMultiplyer, 0);
+                //scrolling down
+                scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
             }
-            Debug.Log(scroll.transform.position);
+            if(Kmap.toPrint) Debug.Log("down"+scroll.transform.position);
         }
+        //if scrolling up
         else if (mouseScrollInput.y > 0)
         {
-            if (yStart  < scroll.transform.position.y)
+            //if we can scroll up
+            if (ScreenConstants.scale *yStart  < scroll.transform.position.y)
             {
-                scroll.transform.position = scroll.transform.position + new Vector3(0, Input.mouseScrollDelta.y * -yScrollMultiplyer, 0);
+                //scroll up
+                scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
             }
-            Debug.Log(scroll.transform.position);
+            if (Kmap.toPrint) Debug.Log("up"+scroll.transform.position);
 
         }
 
@@ -67,16 +81,16 @@ public class ScrollManager : MonoBehaviour
 
         if (mouseScrollInput.x < 0)
         {
-            if (xStart + size.x - xVisible > scroll.transform.position.x)
+            if (ScreenConstants.scale * (xStart + size.x - xVisible) > scroll.transform.position.x)
             {
-                scroll.transform.position = scroll.transform.position + new Vector3(Input.mouseScrollDelta.x * -xScrollMultiplyer, 0, 0);
+                scroll.transform.position = scroll.transform.position + new Vector3(ScreenConstants.scale * (Input.mouseScrollDelta.x * -xScrollMultiplyer), 0, 0);
             }
         }
         else if (mouseScrollInput.x > 0)
         {
-            if (xStart < scroll.transform.position.x)
+            if (ScreenConstants.scale* xStart < scroll.transform.position.x)
             {
-                scroll.transform.position = scroll.transform.position + new Vector3(Input.mouseScrollDelta.x * -xScrollMultiplyer,0, 0);
+                scroll.transform.position = scroll.transform.position + new Vector3(ScreenConstants.scale * (Input.mouseScrollDelta.x * -xScrollMultiplyer),0, 0);
             }
         }
         //Debug.Log(Input.mouseScrollDelta.x);

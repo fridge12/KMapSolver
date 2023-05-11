@@ -8,7 +8,7 @@ public class Kmap : MonoBehaviour
 {
     
     //if false this doesn't allow debug statements to print
-    public static readonly bool toPrint = false;
+    public static bool toPrint = false;
     //keep false unless debugging as it adds way to much time for any slightly big input
 
 
@@ -205,7 +205,7 @@ public class Kmap : MonoBehaviour
         GroupComparer GC = new GroupComparer();
 
         Group g;
-        Group gPair;
+        
         //index of g
         int index = 0;
 
