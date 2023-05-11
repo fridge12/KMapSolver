@@ -19,6 +19,8 @@ public class ScrollManager : MonoBehaviour
     public float xStart;
     public float yStart;
 
+    bool mouseInBounds = false;
+
     Vector2 size;
 
     RectTransform RT;
@@ -32,6 +34,17 @@ public class ScrollManager : MonoBehaviour
         Debug.Log("height "+size.y);
 
 
+    }
+
+    public void MouseEnter()
+    {
+        mouseInBounds = true;
+    }
+
+
+    public void MouseExit()
+    {
+        mouseInBounds = false;
     }
 
 
@@ -49,52 +62,60 @@ public class ScrollManager : MonoBehaviour
         //taking input from the mouse
         Vector2 mouseScrollInput = Input.mouseScrollDelta;
 
-        //the size of objects within the canvas need to be adjusted as their values are not scaled
-        //their world coordinates however do not need to be scaled
+        
+        //Debug.Log(Input.mousePosition.x+" "+ Input.mousePosition.y);
 
-        //if scrolling down
-        if(mouseScrollInput.y < 0)
+        if (mouseInBounds)
         {
-            //making sure that it doesn't keep scrolling down, and that atleast yVisible amount of pixels are visible
-            //if there is room to move down, move down
-            if(ScreenConstants.scale *(yStart + size.y-yVisible) > scroll.transform.position.y)
+
+
+
+            //the size of objects within the canvas need to be adjusted as their values are not scaled
+            //their world coordinates however do not need to be scaled
+
+            //if scrolling down
+            if (mouseScrollInput.y < 0)
             {
-                //scrolling down
-                scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
+                //making sure that it doesn't keep scrolling down, and that atleast yVisible amount of pixels are visible
+                //if there is room to move down, move down
+                if (ScreenConstants.scale * (yStart + size.y - yVisible) > scroll.transform.position.y)
+                {
+                    //scrolling down
+                    scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
+                }
+                if (Kmap.toPrint) Debug.Log("down" + scroll.transform.position);
             }
-            if(Kmap.toPrint) Debug.Log("down"+scroll.transform.position);
-        }
-        //if scrolling up
-        else if (mouseScrollInput.y > 0)
-        {
-            //if we can scroll up
-            if (ScreenConstants.scale *yStart  < scroll.transform.position.y)
+            //if scrolling up
+            else if (mouseScrollInput.y > 0)
             {
-                //scroll up
-                scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
+                //if we can scroll up
+                if (ScreenConstants.scale * yStart < scroll.transform.position.y)
+                {
+                    //scroll up
+                    scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
+                }
+                if (Kmap.toPrint) Debug.Log("up" + scroll.transform.position);
+
             }
-            if (Kmap.toPrint) Debug.Log("up"+scroll.transform.position);
-
-        }
 
 
 
-        if (mouseScrollInput.x < 0)
-        {
-            if (ScreenConstants.scale * (xStart + size.x - xVisible) > scroll.transform.position.x)
+            if (mouseScrollInput.x < 0)
             {
-                scroll.transform.position = scroll.transform.position + new Vector3(ScreenConstants.scale * (Input.mouseScrollDelta.x * -xScrollMultiplyer), 0, 0);
+                if (ScreenConstants.scale * (xStart + size.x - xVisible) > scroll.transform.position.x)
+                {
+                    scroll.transform.position = scroll.transform.position + new Vector3(ScreenConstants.scale * (Input.mouseScrollDelta.x * -xScrollMultiplyer), 0, 0);
+                }
             }
-        }
-        else if (mouseScrollInput.x > 0)
-        {
-            if (ScreenConstants.scale* xStart < scroll.transform.position.x)
+            else if (mouseScrollInput.x > 0)
             {
-                scroll.transform.position = scroll.transform.position + new Vector3(ScreenConstants.scale * (Input.mouseScrollDelta.x * -xScrollMultiplyer),0, 0);
+                if (ScreenConstants.scale * xStart < scroll.transform.position.x)
+                {
+                    scroll.transform.position = scroll.transform.position + new Vector3(ScreenConstants.scale * (Input.mouseScrollDelta.x * -xScrollMultiplyer), 0, 0);
+                }
             }
+            //Debug.Log(Input.mouseScrollDelta.x);
+            //scroll.transform.position = scroll.transform.position + new Vector3(Input.mouseScrollDelta.x * -xScrollMultiplyer, Input.mouseScrollDelta.y * -yScrollMultiplyer, 0);
         }
-        //Debug.Log(Input.mouseScrollDelta.x);
-        //scroll.transform.position = scroll.transform.position + new Vector3(Input.mouseScrollDelta.x * -xScrollMultiplyer, Input.mouseScrollDelta.y * -yScrollMultiplyer, 0);
-
     }
 }

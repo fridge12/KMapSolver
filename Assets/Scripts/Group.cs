@@ -161,6 +161,27 @@ public class Group
         //Kmap.printGroupsList();
     }
 
+
+    public string terms()
+    {
+        System.Text.StringBuilder terms = new System.Text.StringBuilder("");
+
+        bool isNotFirst = false;
+
+        uint currentDirection = direction;
+        //loops as many times as there are terms in the group
+        for (int i = 0; i < System.Math.Pow(2, BitOperations.countSetBits(direction)); i++)
+        {
+            if (isNotFirst) terms.Append(", ");
+            terms.Append(coordinate | currentDirection);
+            isNotFirst = true;
+            currentDirection = (currentDirection - 1) & direction;
+            
+        }
+
+        return terms.ToString();
+    }
+
     public void printGroup()
     {
         Debug.Log(coordinate + " " + BitOperations.printBits(direction) + " "+ biggerGroups);

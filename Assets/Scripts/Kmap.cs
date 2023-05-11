@@ -335,7 +335,7 @@ public class Kmap : MonoBehaviour
 
     public static string reducedExpression()
     {
-        printGroupsListWithoutRedundantGroups();
+        //printGroupsListWithoutRedundantGroups();
         groupsList.Sort(new GroupComparer());
 
         //using string builder because when using a string, every modification creates a new string
@@ -363,6 +363,8 @@ public class Kmap : MonoBehaviour
                 if (isNotStart) expression.Append(" + ");
                 expression.Append(g.reducedExpression(Group.SOP));
                 isNotStart = true;
+
+                Debug.Log(g.reducedExpression(Group.SOP) + " " + g.terms());
             }
             else
             {
