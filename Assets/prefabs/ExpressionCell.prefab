@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5164579941620859414}
   - component: {fileID: 963435422039596063}
-  - component: {fileID: 7972514702036529598}
   - component: {fileID: 2555250814112589557}
   m_Layer: 0
   m_Name: ExpressionCell
@@ -72,20 +71,6 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
---- !u!114 &7972514702036529598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2578403292672920575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!222 &2555250814112589557
 CanvasRenderer:
   m_ObjectHideFlags: 0

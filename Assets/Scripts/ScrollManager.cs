@@ -31,9 +31,14 @@ public class ScrollManager : MonoBehaviour
         RT = scroll.GetComponent<RectTransform>();
         size = RT.sizeDelta;
         Debug.Log("width "+size.x);
-        Debug.Log("height "+size.y);
+        Debug.Log("height " + size.y);
+    }
 
-
+    private void OnRectTransformDimensionsChange()
+    {
+        //everytime the dimensions of a scrollable thing change resetting their position
+        RectTransform RT = this.GetComponent<RectTransform>();
+        RT.position = new Vector3(xStart * ScreenConstants.scale, yStart * ScreenConstants.scale, 0);
     }
 
     public void MouseEnter()
@@ -67,8 +72,6 @@ public class ScrollManager : MonoBehaviour
 
         if (mouseInBounds)
         {
-
-
 
             //the size of objects within the canvas need to be adjusted as their values are not scaled
             //their world coordinates however do not need to be scaled

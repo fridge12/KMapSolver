@@ -345,6 +345,7 @@ public class Kmap : MonoBehaviour
         bool isNotStart = false;
 
         Group g;
+        
 
         //index of g
         int index = 0;
@@ -360,15 +361,19 @@ public class Kmap : MonoBehaviour
 
             if (SOP_POS.Equals(Group.SOP))
             {
+                //adding + between the terms
                 if (isNotStart) expression.Append(" + ");
+                //adding the reduced expression of the current group to expression
                 expression.Append(g.reducedExpression(Group.SOP));
                 isNotStart = true;
 
-                Debug.Log(g.reducedExpression(Group.SOP) + " " + g.terms());
+                //Debug.Log(g.reducedExpression(Group.SOP) + " " + g.terms());
             }
             else
             {
+                //adding . betweeen the terms
                 if (isNotStart) expression.Append(" . ");
+                //adding the reduced expression of the current group to expression
                 expression.Append("(" + g.reducedExpression(Group.POS) + ")");
                 isNotStart = true;
                 
