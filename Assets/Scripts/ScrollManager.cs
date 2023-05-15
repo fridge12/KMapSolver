@@ -67,11 +67,11 @@ public class ScrollManager : MonoBehaviour
         //taking input from the mouse
         Vector2 mouseScrollInput = Input.mouseScrollDelta;
 
-        
+
         //Debug.Log(Input.mousePosition.x+" "+ Input.mousePosition.y);
 
-        if (mouseInBounds)
-        {
+        if (!mouseInBounds) return;
+        
 
             //the size of objects within the canvas need to be adjusted as their values are not scaled
             //their world coordinates however do not need to be scaled
@@ -119,6 +119,6 @@ public class ScrollManager : MonoBehaviour
             }
             //Debug.Log(Input.mouseScrollDelta.x);
             //scroll.transform.position = scroll.transform.position + new Vector3(Input.mouseScrollDelta.x * -xScrollMultiplyer, Input.mouseScrollDelta.y * -yScrollMultiplyer, 0);
-        }
+        
     }
 }

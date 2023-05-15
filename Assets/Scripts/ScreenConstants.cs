@@ -16,7 +16,7 @@ public class ScreenConstants : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-         Debug.Log("scale factor"+canvas.GetComponent<Canvas>().scaleFactor);
+        if(Kmap.toPrint) Debug.Log("scale factor"+canvas.GetComponent<Canvas>().scaleFactor);
         scale = canvas.GetComponent<Canvas>().scaleFactor;
         oldScale = scale;
     }
@@ -26,7 +26,7 @@ public class ScreenConstants : MonoBehaviour
         //checking to see if the scale factor has actually changed because sometimes this method is called even when scale factor has not changed
         if(scale != canvas.GetComponent<Canvas>().scaleFactor)
         {
-             Debug.Log(scale + " scale has changed " + canvas.GetComponent<Canvas>().scaleFactor);
+            if (Kmap.toPrint) Debug.Log(scale + " scale has changed " + canvas.GetComponent<Canvas>().scaleFactor);
 
             oldScale = scale;
             scale = canvas.GetComponent<Canvas>().scaleFactor;
