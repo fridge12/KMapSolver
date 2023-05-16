@@ -10,8 +10,9 @@ public class CopyToClipBoard : MonoBehaviour
 
     public void onClick()
     {
-        string s = Copy.GetComponent<Text>().text;
-
-        GUIUtility.systemCopyBuffer = s;
+        //text to be copied
+        string copyText = Copy.GetComponent<Text>().text;
+        //copying text to clipboard
+        GUIUtility.systemCopyBuffer = copyText;
     }
 }

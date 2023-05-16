@@ -11,24 +11,6 @@ public class GroupSpawner : MonoBehaviour
 
     bool spawned = false;
 
-  /*  private void Update()
-    {
-        if (!spawned)
-        {
-            spawnGroup("this is a test aaaa", "testing");
-            spawnGroup("this is a test aaaaaaaaaa", "testing");
-            spawnGroup("this is a test aaaa", "testing");
-            spawnGroup("this is a test aaa", "testing");
-            spawnGroup("this is a test", "testing aaaaaaaaaaaaaaaaaaaaaaaaa");
-            spawnGroup("this is a test", "testing");
-            spawnGroup("this is a test", "testing");
-            spawnGroup("this is a test", "testing");
-            spawnGroup("this is a test", "testing");
-            spawnGroup("this is a test", "testing");
-            spawnGroup("this is a test", "testing");
-        }
-        spawned = true;
-    }*/
 
     public void spawnGroupsList()
     {

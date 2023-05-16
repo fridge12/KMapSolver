@@ -142,6 +142,9 @@ public class Kmap : MonoBehaviour
 
         Debug.Log(inputs);
 
+        Group g = new Group(0, 0);
+        GroupComparer GC = new GroupComparer();
+
         //setting it null so that it doesn't detect 0 accidently and so we can use all coordinates up to 2^32 -1
         uint? coordinate = null;
         //seperating the numbers, and creating single groups with each number
@@ -169,8 +172,12 @@ public class Kmap : MonoBehaviour
                 else
                 {
                     //creates a new single gorup and adds it to the list
-                    groupsList.Add(new Group((uint)coordinate,0));
-                    if (toPrint) Debug.Log(coordinate);
+                    g.coordinate = (uint)coordinate;
+                    int insertIndex = groupsList.BinarySearch(g, GC);
+                    if ( insertIndex < 0) {
+                        groupsList.Insert(~insertIndex,new Group((uint)coordinate, 0));
+                        if (toPrint) Debug.Log((uint)coordinate);
+                    }
                 }
 
                 //resetting coordinate
@@ -180,7 +187,9 @@ public class Kmap : MonoBehaviour
         }
         //printGroupsList();
         //sorting the list 
-        groupsList.Sort(new GroupComparer());
+
+        //dont need to sort the list anymore since im inserting the elements into their correct position
+        //groupsList.Sort(new GroupComparer());
         Debug.Log("groups list after input and sorting");
         //printGroupsList();
 
