@@ -9,6 +9,8 @@ public class Group
 
     public readonly static string SOP = "SOP";
 
+    private static readonly bool toPrint = false;
+
     //theoretically it should be the number of non sign bits in coordinate variable
     //but because the List<T> class methods use int as a return type the max is 31
     public readonly static int maxVariables = 31;
@@ -95,7 +97,7 @@ public class Group
 
     public bool isRedundant()
     {
-        if (Kmap.toPrint) Debug.Log("in isRedundant");
+        if (toPrint) Debug.Log("in isRedundant");
         //printGroup();
 
         Group groupSearch = new Group(0, 0);
@@ -122,7 +124,7 @@ public class Group
             groupSearch.coordinate = coordinate | currentDirection;
 
             //Debug.Log(BitOperations.printBits(groupSearch.coordinate));
-            if (Kmap.toPrint) Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].printGroup();
+            if (toPrint) Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].printGroup();
             //if any term is not a part of another bigger group then it means this group is not redundant 
             if (Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups <= 1)return false; 
         }
@@ -138,7 +140,7 @@ public class Group
     //val is the amount by which the biggerGroup of each single is changed 
     public void updateBiggerGroups(int val)
     {
-        if (Kmap.toPrint) Debug.Log("in updating biggerr groups " + val);
+        if (toPrint) Debug.Log("in updating biggerr groups " + val);
         //Kmap.printGroupsList();
 
         Group groupSearch = new Group(0, 0);

@@ -8,7 +8,7 @@ public class Kmap : MonoBehaviour
 {
     
     //if false this doesn't allow debug statements to print
-    public static bool toPrint = false;
+    private static readonly bool toPrint = false;
     //keep false unless debugging as it adds way to much time for any slightly big input
 
 

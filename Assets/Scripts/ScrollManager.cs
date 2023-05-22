@@ -5,6 +5,9 @@ using UnityEngine;
 public class ScrollManager : MonoBehaviour
 {
 
+    private static readonly bool toPrint = false;
+
+
     public GameObject scroll;
     public int xScrollMultiplyer;
     public int yScrollMultiplyer;
@@ -86,7 +89,7 @@ public class ScrollManager : MonoBehaviour
                     //scrolling down
                     scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
                 }
-                if (Kmap.toPrint) Debug.Log("down" + scroll.transform.position);
+                if (toPrint) Debug.Log("down" + scroll.transform.position);
             }
             //if scrolling up
             else if (mouseScrollInput.y > 0)
@@ -97,7 +100,7 @@ public class ScrollManager : MonoBehaviour
                     //scroll up
                     scroll.transform.position = scroll.transform.position + new Vector3(0, ScreenConstants.scale * (Input.mouseScrollDelta.y * -yScrollMultiplyer), 0);
                 }
-                if (Kmap.toPrint) Debug.Log("up" + scroll.transform.position);
+                if (toPrint) Debug.Log("up" + scroll.transform.position);
 
             }
 
