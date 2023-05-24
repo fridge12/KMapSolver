@@ -63,8 +63,8 @@ public class ScrollManager : MonoBehaviour
         if(RT.sizeDelta != size)
         {
             size = RT.sizeDelta;
-            Debug.Log("width "+size.x);
-            Debug.Log("height "+size.y);
+            if (toPrint) Debug.Log("width "+size.x);
+            if (toPrint) Debug.Log("height "+size.y);
         }
 
         //taking input from the mouse
