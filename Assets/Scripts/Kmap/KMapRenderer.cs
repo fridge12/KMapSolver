@@ -6,31 +6,50 @@ using UnityEngine.UI;
 //attach to parent object
 public class KMapRenderer : MonoBehaviour
 {
-
+    //cell prefab
     public GameObject cell;
 
-    public GameObject[,] KMapArray = new GameObject[8,8];
+    //array containing visible kmap
+    public GameObject[,] KMapArray;
 
+    //parent object
     public GameObject parent;
 
-    public static int gridX;
-    public static int gridY;
+    public static float parentStartY = 353 -280;
+    public static float parentStartX = 0;
 
+    public static float parentEndY = 353;
+    public static float parentEndX = 500;
 
-    Vector2 cellSize = new Vector2(500f / 8f, 280f / 8f);
+    //number of columns and rows
+    public int columns;
+    public int rows;
 
+    //size of cell
+    Vector2 cellSize;
+
+    public static Vector2 cellVelocity = new Vector2(0.125f,0.125f);
     private void Start()
     {
+
+        initialise();
+
         GameObject ob;
         //cell.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
-        for (int i = 0; i < 64; i++)
+        for (int i = 0; i < 128; i++)
         {
-            cellSpawner(i % 8, i / 8);
-            Debug.Log(i % 8);
-            Debug.Log(i / 8);
+            cellSpawner(i % columns, i / columns);
+            Debug.Log(i % columns);
+            Debug.Log(i / columns);
         }
 
         
+    }
+
+    public void initialise()
+    {
+        cellSize = new Vector2(500f / (float)columns, 280f/ (float)rows);
+        KMapArray = new GameObject[rows, columns]; 
     }
 
     public void cellSpawner(int x, int y)
@@ -38,14 +57,16 @@ public class KMapRenderer : MonoBehaviour
 
         GameObject ob = Instantiate(cell, new Vector3(0, 0, 0), Quaternion.identity);
         ob.transform.SetParent(parent.transform);
-        ob.GetComponent<RectTransform>().sizeDelta = cellSize; 
+        ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale/ ScreenConstants.oldScale); 
         KMapArray[y, x] = ob;
 
-        ob.transform.position = new Vector3((x * cellSize.x * ScreenConstants.scale ), (353 * ScreenConstants.scale) - ((y+1) * cellSize.y * ScreenConstants.scale), 0);
+        Debug.Log(transform.position.y+"should be 353");
+
+        ob.transform.position = new Vector3((x * cellSize.x * ScreenConstants.scale ), (parentEndY * ScreenConstants.scale) - ((y+1) * cellSize.y * ScreenConstants.scale), 0);
         int coordinate = 0;
 
         //n should be kmap.variables -1 but for testing its 4
-        for (int n = 6 - 1; n >= 0; n--)
+        for (int n = 6; n >= 0; n--)
         {
             if (n % 2 == 1)
             {
@@ -62,17 +83,24 @@ public class KMapRenderer : MonoBehaviour
 
     }
 
-    private void OnRectTransformDimensionsChange()
+   /* private void OnRectTransformDimensionsChange()
     {
         RectTransform RT = GetComponent<RectTransform>();
         GridLayoutGroup GL = GetComponent<GridLayoutGroup>();
-        GL.cellSize = new Vector2(RT.sizeDelta.x / 16, RT.sizeDelta.y / 8);
+        GL.cellSize = new Vector2(RT.sizeDelta.x / columns, RT.sizeDelta.y / rows);
       
-    }
+    }*/
 
     // Update is called once per frame
+    int ctr = 0;
     void Update()
     {
-        
+        if(ctr%1000== 0)
+        {
+            Debug.Log(ctr);
+            Debug.Log(parent.GetComponent<RectTransform>().sizeDelta);
+            Debug.Log(ScreenConstants.oldScale / ScreenConstants.scale);
+        }
+        ctr++;
     }
 }

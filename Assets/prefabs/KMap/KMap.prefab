@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 684350354645272809}
   - component: {fileID: 4390566311679643571}
+  - component: {fileID: 8147656239834209356}
+  - component: {fileID: 5716327447833970100}
   m_Layer: 0
   m_Name: KMap
   m_TagString: Untagged
@@ -52,6 +54,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coordinate: {fileID: 8316239291112564731}
   number: {fileID: 4127716403015231310}
+--- !u!114 &8147656239834209356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2350710465298725268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0584f4f1ce420f4999428a845b4f008, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!222 &5716327447833970100
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2350710465298725268}
+  m_CullTransparentMesh: 1
 --- !u!1 &4127716403015231310
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,7 +225,7 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 5
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0

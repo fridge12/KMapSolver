@@ -1819,6 +1819,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cell: {fileID: 2350710465298725268, guid: 29ea4a3aae191704ea899ee70e53133c, type: 3}
   parent: {fileID: 992994977}
+  columns: 16
+  rows: 8
 --- !u!1 &1068082398
 GameObject:
   m_ObjectHideFlags: 0
@@ -1994,6 +1996,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1161187864}
+  - component: {fileID: 1161187865}
   m_Layer: 5
   m_Name: KMap
   m_TagString: Untagged
@@ -2021,6 +2024,20 @@ RectTransform:
   m_AnchoredPosition: {x: -109.999954, y: 0}
   m_SizeDelta: {x: 500, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1161187865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161187863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
 --- !u!1 &1185941615
 GameObject:
   m_ObjectHideFlags: 0

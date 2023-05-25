@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ScreenConstants : MonoBehaviour
 {
-    private static readonly bool toPrint = false;
+    private static readonly bool toPrint = true;
 
 
     public GameObject canvas;
