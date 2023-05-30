@@ -5,6 +5,7 @@ using UnityEngine;
 public class cellMover : MonoBehaviour
 {
     RectTransform RT;
+    static int ctr = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -15,37 +16,53 @@ public class cellMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position= new Vector3( transform.position.x + (KMapRenderer.cellVelocity.x * ScreenConstants.scale), transform.position.y+ (KMapRenderer.cellVelocity.y * ScreenConstants.scale), 0 ) ;
+        if (ctr > 0) ctr--;
+        else updatePosition();
+    }
 
-        float y = transform.position.y;
-        float x=transform.position.x;
-        bool updatePosition = false; 
-        if (transform.position.y > KMapRenderer.parentEndY * ScreenConstants.scale + (RT.sizeDelta.y * 0.33) * ScreenConstants.scale)
+    private void OnRectTransformDimensionsChange()
+    {
+        ctr = 1000;
+        Debug.Log(ScreenConstants.scale+"cell mover");
+    }
+
+    void updatePosition()
+    {
+        //if (KMapRenderer.cellVelocity.Equals(new Vector2(0, 0))) return;
+
+        RT.localPosition = new Vector3(RT.localPosition.x + (KMapRenderer.cellVelocity.x ), RT.localPosition.y + (KMapRenderer.cellVelocity.y ), 0);
+
+        
+
+        float y = RT.localPosition.y ;
+        float x = RT.localPosition.x  ;
+        bool positionUpdated = false;
+        if (RT.localPosition.y > (0+ (RT.sizeDelta.y * 0.33)) )
         {
-            y = KMapRenderer.parentStartY * ScreenConstants.scale - (RT.sizeDelta.y * 0.33f) * ScreenConstants.scale;
-            updatePosition = true;
+            y =  -280 - (RT.sizeDelta.y * 0.66f) +(RT.localPosition.y - (0 + (RT.sizeDelta.y * 0.33f))) ;
+            positionUpdated = true;
         }
-        if(transform.position.y< KMapRenderer.parentStartY* ScreenConstants.scale - (RT.sizeDelta.y * 0.33) * ScreenConstants.scale)
+        if (RT.localPosition.y < (-280 - (RT.sizeDelta.y * 0.66)) )
         {
-            y = KMapRenderer.parentEndY * ScreenConstants.scale + (RT.sizeDelta.y * 0.33f) * ScreenConstants.scale;
-            updatePosition = true;
+            y = (0 + (RT.sizeDelta.y * 0.33f))+(RT.localPosition.y - (-280 - (RT.sizeDelta.y * 0.66f)));
+            positionUpdated = true;
         }
 
 
-        if (transform.position.x > KMapRenderer.parentEndX * ScreenConstants.scale)
+        if (RT.localPosition.x > KMapRenderer.parentEndX )
         {
-            x = (KMapRenderer.parentStartX -RT.sizeDelta.x) * ScreenConstants.scale;
-            updatePosition = true;
+            x = (0 - RT.sizeDelta.x)+(RT.localPosition.x - KMapRenderer.parentEndX);
+            positionUpdated = true;
         }
-        if( transform.position.x < (KMapRenderer.parentStartX- RT.sizeDelta.x) * ScreenConstants.scale)
+        if (RT.localPosition.x < (0 - RT.sizeDelta.x) )
         {
-            x = KMapRenderer.parentEndX * ScreenConstants.scale;
-            updatePosition = true;
+            x = KMapRenderer.parentEndX +(RT.localPosition.x - (0 - RT.sizeDelta.x));
+            positionUpdated = true;
         }
 
-        if(updatePosition)
+        //if (positionUpdated)
         {
-            transform.position = new Vector3(x, y, 0);
+            RT.localPosition = new Vector3(x , y, 0);
         }
     }
 }
