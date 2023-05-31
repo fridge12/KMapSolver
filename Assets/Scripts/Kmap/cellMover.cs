@@ -37,32 +37,36 @@ public class cellMover : MonoBehaviour
         float y = RT.localPosition.y ;
         float x = RT.localPosition.x  ;
         bool positionUpdated = false;
-        if (RT.localPosition.y > (0+ (RT.sizeDelta.y * 0.33)) )
+        if (RT.localPosition.y > (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33)) )
         {
-            y =  -280 - (RT.sizeDelta.y * 0.66f) +(RT.localPosition.y - (0 + (RT.sizeDelta.y * 0.33f))) ;
+            y =  KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f) +(RT.localPosition.y - (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f))) ;
+            KMapRenderer.updateArrayRowStart = 1;
             positionUpdated = true;
         }
-        if (RT.localPosition.y < (-280 - (RT.sizeDelta.y * 0.66)) )
+        if (RT.localPosition.y < (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66)) )
         {
-            y = (0 + (RT.sizeDelta.y * 0.33f))+(RT.localPosition.y - (-280 - (RT.sizeDelta.y * 0.66f)));
+            y = (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f))+(RT.localPosition.y - (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f)));
+            KMapRenderer.updateArrayRowStart = -1;
             positionUpdated = true;
         }
 
 
         if (RT.localPosition.x > KMapRenderer.parentEndX )
         {
-            x = (0 - RT.sizeDelta.x)+(RT.localPosition.x - KMapRenderer.parentEndX);
+            x = (KMapRenderer.parentStartX - RT.sizeDelta.x)+(RT.localPosition.x - KMapRenderer.parentEndX);
+            KMapRenderer.updateArrayColStart = -1;
             positionUpdated = true;
         }
-        if (RT.localPosition.x < (0 - RT.sizeDelta.x) )
+        if (RT.localPosition.x < (KMapRenderer.parentStartX - RT.sizeDelta.x) )
         {
-            x = KMapRenderer.parentEndX +(RT.localPosition.x - (0 - RT.sizeDelta.x));
+            x = KMapRenderer.parentEndX +(RT.localPosition.x - (KMapRenderer.parentStartX - RT.sizeDelta.x));
+            KMapRenderer.updateArrayColStart = 1;
+
             positionUpdated = true;
         }
 
-        //if (positionUpdated)
-        {
+        
             RT.localPosition = new Vector3(x , y, 0);
-        }
+        
     }
 }

@@ -18,11 +18,11 @@ public class KMapRenderer : MonoBehaviour
     //parent object
     public GameObject parent;
 
-    public static float parentStartY = 353 -280;
+    public static float parentStartY = 0;
     public static float parentStartX = 0;
 
-    public static float parentEndY = 353;
-    public static float parentEndX = 500;
+    public static float parentEndY = -252;
+    public static float parentEndX = 450;
 
     //number of columns and rows
     public int columns;
@@ -57,13 +57,6 @@ public class KMapRenderer : MonoBehaviour
             Debug.Log(i / columns);
         }
 
-        /*for(int i = 0; i < 16; i++)
-        {
-            for(int j = 0; j < 16; j++)
-            {
-                cellSpawner(j, i);
-            }
-        }*/
 
     }
 
@@ -71,11 +64,14 @@ public class KMapRenderer : MonoBehaviour
     int ctr = 0;
     void Update()
     {
+        arrayColStart += updateArrayColStart;
+        arrayRowStart += updateArrayRowStart;
+
         if (ctr % 1000 == 0)
         {
             Debug.Log(ctr);
-            Debug.Log(parent.GetComponent<RectTransform>().sizeDelta);
-            Debug.Log(ScreenConstants.oldScale / ScreenConstants.scale);
+            //Debug.Log(parent.GetComponent<RectTransform>().sizeDelta);
+            //Debug.Log(ScreenConstants.oldScale / ScreenConstants.scale);
         }
         ctr++;
 
@@ -94,7 +90,7 @@ public class KMapRenderer : MonoBehaviour
 
     public void initialise()
     {
-        cellSize = new Vector2(500f / (float)columns, 280f/ (float)rows);
+        cellSize = new Vector2(System.Math.Abs(parentEndX-parentStartX) / (float)columns, System.Math.Abs(parentEndY - parentStartY)/ (float)rows);
         KMapArray = new GameObject[rows, columns]; 
     }
 
@@ -106,15 +102,22 @@ public class KMapRenderer : MonoBehaviour
         ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale/ ScreenConstants.oldScale); 
 
 
-        KMapArray[y, x] = ob;
+        KMapArray[y%rows, x%columns] = ob;
 
-        //Debug.Log(transform.position.y+"should be 353");
+        ob.GetComponent<RectTransform>().localPosition = new Vector3(x * cellSize.x, (-y * cellSize.y)-(cellSize.y *0.66f), 0);
+        int coordinate = calculateCoordinate(x,y);
 
-        ob.transform.position = new Vector3((parentStartX * ScreenConstants.scale) + (x * cellSize.x * ScreenConstants.scale ), (parentEndY * ScreenConstants.scale) - ((y+1) * cellSize.y * ScreenConstants.scale), 0);
+
+        ob.GetComponentsInChildren<Text>()[1].text = coordinate+"";
+    }
+
+
+
+    public int calculateCoordinate(int x, int y)
+    {
         int coordinate = 0;
-
         //n should be kmap.variables -1 but for testing its 4
-        for (int n = 8; n >= 0; n--)
+        for (int n = 6; n >= 0; n--)
         {
             if (n % 2 == 1)
             {
@@ -127,16 +130,7 @@ public class KMapRenderer : MonoBehaviour
             }
         }
 
-        ob.GetComponentsInChildren<Text>()[1].text = coordinate+"";
+        return coordinate;
     }
-
-   /* private void OnRectTransformDimensionsChange()
-    {
-        RectTransform RT = GetComponent<RectTransform>();
-        GridLayoutGroup GL = GetComponent<GridLayoutGroup>();
-        GL.cellSize = new Vector2(RT.sizeDelta.x / columns, RT.sizeDelta.y / rows);
-      
-    }*/
-
     
 }
