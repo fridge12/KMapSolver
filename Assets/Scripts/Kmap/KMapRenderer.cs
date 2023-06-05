@@ -12,6 +12,13 @@ public class KMapRenderer : MonoBehaviour
     //cell prefab
     public GameObject cell;
 
+    //label prefab
+    public GameObject label;
+
+    public static GameObject[] columnLabels;
+    public static GameObject[] rowLabels;
+
+
     //array containing visible kmap
     public GameObject[,] KMapArray;
 
@@ -57,7 +64,14 @@ public class KMapRenderer : MonoBehaviour
             Debug.Log(i / columns);
         }
 
-
+        for(int i = 0; i < rowLabels.Length; i++)
+        {
+            rowLabelSpawner(i);
+        }
+        for (int i = 0; i < columnLabels.Length; i++)
+        {
+            columnLabelSpawner(i);
+        }
     }
 
     // Update is called once per frame
@@ -91,7 +105,10 @@ public class KMapRenderer : MonoBehaviour
     public void initialise()
     {
         cellSize = new Vector2(System.Math.Abs(parentEndX-parentStartX) / (float)columns, System.Math.Abs(parentEndY - parentStartY)/ (float)rows);
-        KMapArray = new GameObject[rows, columns]; 
+        KMapArray = new GameObject[rows, columns];
+
+        columnLabels = new GameObject[columns+1];
+        rowLabels = new GameObject[rows+1];
     }
 
     public void cellSpawner(int x, int y)
@@ -111,7 +128,45 @@ public class KMapRenderer : MonoBehaviour
         ob.GetComponentsInChildren<Text>()[1].text = coordinate+"";
     }
 
+    public void rowLabelSpawner(int y)
+    {
+        GameObject ob = Instantiate(label, new Vector3(0, 0, 0), Quaternion.identity);
+        ob.transform.SetParent(parent.transform.parent.transform);
+        ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale / ScreenConstants.oldScale);
+        rowLabels[y] = ob;
+        ob.AddComponent<rowLabelMover>();
+        ob.GetComponent<RectTransform>().localPosition = new Vector3(50-cellSize.x, (-y * cellSize.y)-28, 0);
+        ob.GetComponent<Text>().text = ConstantVariables( calculateCoordinate(0, y) & 0xAAAAAAA);
+    }
 
+    public void columnLabelSpawner(int x)
+    {
+        GameObject ob = Instantiate(label, new Vector3(0, 0, 0), Quaternion.identity);
+        ob.transform.SetParent(parent.transform.parent.transform);
+        ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale / ScreenConstants.oldScale);
+        columnLabels[x] = ob;
+        ob.AddComponent<columnLabelMover>();
+        ob.GetComponent<RectTransform>().localPosition = new Vector3((x * cellSize.x)+50,  cellSize.y-28, 0);
+        ob.GetComponent<Text>().text = ConstantVariables(calculateCoordinate(x,0) & 0x55555555);
+    }
+
+    public string ConstantVariables(int coordinate)
+    {
+        System.Text.StringBuilder exp = new System.Text.StringBuilder("");
+        
+        //should be kmap.variables - 1 not 7
+        for (int i = 7; i >= 0; i--)
+        {
+            if (((coordinate >> i) & 1) == 1)
+            {
+                exp = exp.Append((char)(64 + 7 - i));
+
+            }
+        }
+
+        //returning constant variables
+        return exp.ToString();
+    }
 
     public int calculateCoordinate(int x, int y)
     {

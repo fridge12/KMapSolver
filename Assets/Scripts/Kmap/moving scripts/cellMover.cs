@@ -16,8 +16,7 @@ public class cellMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (ctr > 0) ctr--;
-        else updatePosition();
+         updatePosition();
     }
 
     private void OnRectTransformDimensionsChange()
@@ -40,13 +39,13 @@ public class cellMover : MonoBehaviour
         if (RT.localPosition.y > (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33)) )
         {
             y =  KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f) +(RT.localPosition.y - (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f))) ;
-            KMapRenderer.updateArrayRowStart = 1;
+            //KMapRenderer.updateArrayRowStart = 1;
             positionUpdated = true;
         }
         if (RT.localPosition.y < (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66)) )
         {
             y = (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f))+(RT.localPosition.y - (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f)));
-            KMapRenderer.updateArrayRowStart = -1;
+            //KMapRenderer.updateArrayRowStart = -1;
             positionUpdated = true;
         }
 
@@ -54,13 +53,13 @@ public class cellMover : MonoBehaviour
         if (RT.localPosition.x > KMapRenderer.parentEndX )
         {
             x = (KMapRenderer.parentStartX - RT.sizeDelta.x)+(RT.localPosition.x - KMapRenderer.parentEndX);
-            KMapRenderer.updateArrayColStart = -1;
+            //KMapRenderer.updateArrayColStart = -1;
             positionUpdated = true;
         }
         if (RT.localPosition.x < (KMapRenderer.parentStartX - RT.sizeDelta.x) )
         {
             x = KMapRenderer.parentEndX +(RT.localPosition.x - (KMapRenderer.parentStartX - RT.sizeDelta.x));
-            KMapRenderer.updateArrayColStart = 1;
+            //KMapRenderer.updateArrayColStart = 1;
 
             positionUpdated = true;
         }
