@@ -27,19 +27,18 @@ public class rowLabelMover : MonoBehaviour
         RT.localPosition = new Vector3(RT.localPosition.x, RT.localPosition.y + (KMapRenderer.cellVelocity.y), 0);
 
 
-
         float y = RT.localPosition.y;
         float x = RT.localPosition.x;
         bool positionUpdated = false;
-        if (RT.localPosition.y > (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33)))
+        if (RT.localPosition.y > (KMapRenderer.parentStartY + RT.sizeDelta.y - 28))
         {
-            y = KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f) + (RT.localPosition.y - (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f)));
+            y = KMapRenderer.parentEndY -28  + (RT.localPosition.y - (KMapRenderer.parentStartY) - (RT.sizeDelta.y - 28));
             KMapRenderer.updateArrayRowStart += 1;
             positionUpdated = true;
         }
-        if (RT.localPosition.y < (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66)))
+        if (RT.localPosition.y < (KMapRenderer.parentEndY -28))
         {
-            y = (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f)) + (RT.localPosition.y - (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f)));
+            y = (KMapRenderer.parentStartY  + (RT.localPosition.y - KMapRenderer.parentEndY+28) + (RT.sizeDelta.y - 28));
             KMapRenderer.updateArrayRowStart -= 1;
             positionUpdated = true;
         }

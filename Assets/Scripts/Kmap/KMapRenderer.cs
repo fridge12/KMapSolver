@@ -59,9 +59,17 @@ public class KMapRenderer : MonoBehaviour
         //cell.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
         for (int i = 0; i < 128; i++)
         {
-            cellSpawner(i % columns, i / columns);
+            //cellSpawner(i % columns, i / columns);
             Debug.Log(i % columns);
             Debug.Log(i / columns);
+        }
+
+        for(int i = 0; i < columns + 1; i++)
+        {
+            for(int j = 0; j < rows + 1; j++)
+            {
+                cellSpawner(i,j);
+            }
         }
 
         for(int i = 0; i < rowLabels.Length; i++)
@@ -105,7 +113,7 @@ public class KMapRenderer : MonoBehaviour
     public void initialise()
     {
         cellSize = new Vector2(System.Math.Abs(parentEndX-parentStartX) / (float)columns, System.Math.Abs(parentEndY - parentStartY)/ (float)rows);
-        KMapArray = new GameObject[rows, columns];
+        KMapArray = new GameObject[rows+1, columns+1];
 
         columnLabels = new GameObject[columns+1];
         rowLabels = new GameObject[rows+1];
@@ -119,7 +127,7 @@ public class KMapRenderer : MonoBehaviour
         ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale/ ScreenConstants.oldScale); 
 
 
-        KMapArray[y%rows, x%columns] = ob;
+        KMapArray[y% (rows+1), x%(columns+1)] = ob;
 
         ob.GetComponent<RectTransform>().localPosition = new Vector3(x * cellSize.x, (-y * cellSize.y)-(cellSize.y *0.66f), 0);
         int coordinate = calculateCoordinate(x,y);
@@ -155,11 +163,11 @@ public class KMapRenderer : MonoBehaviour
         System.Text.StringBuilder exp = new System.Text.StringBuilder("");
         
         //should be kmap.variables - 1 not 7
-        for (int i = 7; i >= 0; i--)
+        for (int i = 9; i >= 0; i--)
         {
             if (((coordinate >> i) & 1) == 1)
             {
-                exp = exp.Append((char)(64 + 7 - i));
+                exp = exp.Append((char)(64 + 9 - i));
 
             }
         }
@@ -172,7 +180,7 @@ public class KMapRenderer : MonoBehaviour
     {
         int coordinate = 0;
         //n should be kmap.variables -1 but for testing its 4
-        for (int n = 6; n >= 0; n--)
+        for (int n = 9; n >= 0; n--)
         {
             if (n % 2 == 1)
             {
