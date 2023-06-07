@@ -29,7 +29,12 @@ public class cellMover : MonoBehaviour
     {
         //if (KMapRenderer.cellVelocity.Equals(new Vector2(0, 0))) return;
 
-        RT.localPosition = new Vector3(RT.localPosition.x + (KMapRenderer.cellVelocity.x ), RT.localPosition.y + (KMapRenderer.cellVelocity.y ), 0);
+        if (!KMapRenderer.canMoveUp && KMapRenderer.cellVelocity.y > 0) KMapRenderer.cellVelocity.y = 0;
+        if (!KMapRenderer.canMoveDown && KMapRenderer.cellVelocity.y < 0) KMapRenderer.cellVelocity.y = 0;
+        if (!KMapRenderer.canMoveLeft && KMapRenderer.cellVelocity.x < 0) KMapRenderer.cellVelocity.x = 0;
+        if (!KMapRenderer.canMoveRight && KMapRenderer.cellVelocity.x > 0) KMapRenderer.cellVelocity.x = 0;
+
+         RT.localPosition = new Vector3(RT.localPosition.x + (KMapRenderer.cellVelocity.x ), RT.localPosition.y + (KMapRenderer.cellVelocity.y ), 0);
 
         
 

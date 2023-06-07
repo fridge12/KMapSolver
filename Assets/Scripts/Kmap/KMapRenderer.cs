@@ -31,6 +31,9 @@ public class KMapRenderer : MonoBehaviour
     public static float parentEndY = -252;
     public static float parentEndX = 450;
 
+    public static readonly int maxColumns = 16;
+    public static readonly int maxRows = 8;
+
     //number of columns and rows
     public int columns;
     public int rows;
@@ -45,14 +48,22 @@ public class KMapRenderer : MonoBehaviour
     public static int arrayRowStart=0;
     public static int arrayColStart=0;
 
-    public static int updateArrayRowStart=0;
-    public static int updateArrayColStart=0;
+    //public static int updateArrayRowStart=0;
+    //public static int updateArrayColStart=0;
+
+    public static bool canMoveUp = true;
+    public static bool canMoveDown = false;
+    public static bool canMoveLeft = true;
+    public static bool canMoveRight = false;
+
 
 
     public static Vector2 oldMousePosition;
     private void Start()
     {
         oldMousePosition = Input.mousePosition;
+        //rows = 4;
+        //columns = 4;
         initialise();
 
         GameObject ob;
@@ -64,9 +75,9 @@ public class KMapRenderer : MonoBehaviour
             Debug.Log(i / columns);
         }
 
-        for(int i = 0; i < columns + 1; i++)
+        for(int i = 0; i < System.Math.Min(columns,maxColumns+1) ; i++)
         {
-            for(int j = 0; j < rows + 1; j++)
+            for(int j = 0; j < System.Math.Min(rows, maxRows+1); j++)
             {
                 cellSpawner(i,j);
             }
@@ -86,8 +97,18 @@ public class KMapRenderer : MonoBehaviour
     int ctr = 0;
     void Update()
     {
-        arrayColStart += updateArrayColStart;
-        arrayRowStart += updateArrayRowStart;
+        //arrayColStart += updateArrayColStart;
+        //arrayRowStart += updateArrayRowStart;
+
+        canMoveDown = canMoveLeft = canMoveRight = canMoveUp = true;
+
+        if (arrayColStart < 0) canMoveRight = false;
+        if (arrayColStart + maxColumns > columns) canMoveLeft = false;
+        if (arrayRowStart < 0) canMoveDown = false;
+        if (arrayRowStart + maxRows > rows) canMoveUp = false;
+
+        if (rows <= maxRows) canMoveDown = canMoveUp = false;
+        if (columns <= maxColumns) canMoveRight = canMoveLeft = false;
 
         if (ctr % 1000 == 0)
         {
@@ -112,11 +133,18 @@ public class KMapRenderer : MonoBehaviour
 
     public void initialise()
     {
-        cellSize = new Vector2(System.Math.Abs(parentEndX-parentStartX) / (float)columns, System.Math.Abs(parentEndY - parentStartY)/ (float)rows);
-        KMapArray = new GameObject[rows+1, columns+1];
+        Kmap.variables =8;
+        rows = (int)System.Math.Pow(2, (Kmap.variables / 2));
+        columns = (int)System.Math.Pow(2, Kmap.variables - (Kmap.variables / 2));
 
-        columnLabels = new GameObject[columns+1];
-        rowLabels = new GameObject[rows+1];
+
+        cellSize = new Vector2(System.Math.Abs(parentEndX-parentStartX) / (float)System.Math.Min(columns, maxColumns), System.Math.Abs(parentEndY - parentStartY)/ (float)System.Math.Min(rows, maxRows ));
+
+
+        KMapArray = new GameObject[System.Math.Min(rows, maxRows + 1), System.Math.Min(columns, maxColumns + 1)];
+
+        columnLabels = new GameObject[System.Math.Min(columns, maxColumns + 1)];
+        rowLabels = new GameObject[System.Math.Min(rows, maxRows + 1)];
     }
 
     public void cellSpawner(int x, int y)
@@ -127,7 +155,7 @@ public class KMapRenderer : MonoBehaviour
         ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale/ ScreenConstants.oldScale); 
 
 
-        KMapArray[y% (rows+1), x%(columns+1)] = ob;
+        KMapArray[y% System.Math.Min(rows, maxRows + 1), x % System.Math.Min(columns, maxColumns + 1)] = ob;
 
         ob.GetComponent<RectTransform>().localPosition = new Vector3(x * cellSize.x, (-y * cellSize.y)-(cellSize.y *0.66f), 0);
         int coordinate = calculateCoordinate(x,y);
@@ -145,6 +173,7 @@ public class KMapRenderer : MonoBehaviour
         ob.AddComponent<rowLabelMover>();
         ob.GetComponent<RectTransform>().localPosition = new Vector3(50-cellSize.x, (-y * cellSize.y)-28, 0);
         ob.GetComponent<Text>().text = ConstantVariables( calculateCoordinate(0, y) & 0xAAAAAAA);
+        ob.GetComponent<Text>().alignment = TextAnchor.MiddleRight;
     }
 
     public void columnLabelSpawner(int x)
@@ -156,6 +185,7 @@ public class KMapRenderer : MonoBehaviour
         ob.AddComponent<columnLabelMover>();
         ob.GetComponent<RectTransform>().localPosition = new Vector3((x * cellSize.x)+50,  cellSize.y-28, 0);
         ob.GetComponent<Text>().text = ConstantVariables(calculateCoordinate(x,0) & 0x55555555);
+        ob.GetComponent<Text>().alignment = TextAnchor.LowerCenter;
     }
 
     public string ConstantVariables(int coordinate)
@@ -163,11 +193,11 @@ public class KMapRenderer : MonoBehaviour
         System.Text.StringBuilder exp = new System.Text.StringBuilder("");
         
         //should be kmap.variables - 1 not 7
-        for (int i = 9; i >= 0; i--)
+        for (int i = Kmap.variables ; i >= 0; i--)
         {
             if (((coordinate >> i) & 1) == 1)
             {
-                exp = exp.Append((char)(64 + 9 - i));
+                exp = exp.Append((char)(64 + Kmap.variables  - i));
 
             }
         }
@@ -180,7 +210,7 @@ public class KMapRenderer : MonoBehaviour
     {
         int coordinate = 0;
         //n should be kmap.variables -1 but for testing its 4
-        for (int n = 9; n >= 0; n--)
+        for (int n = Kmap.variables + 2; n >= 0; n--)
         {
             if (n % 2 == 1)
             {

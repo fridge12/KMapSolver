@@ -33,13 +33,13 @@ public class rowLabelMover : MonoBehaviour
         if (RT.localPosition.y > (KMapRenderer.parentStartY + RT.sizeDelta.y - 28))
         {
             y = KMapRenderer.parentEndY -28  + (RT.localPosition.y - (KMapRenderer.parentStartY) - (RT.sizeDelta.y - 28));
-            KMapRenderer.updateArrayRowStart += 1;
+            KMapRenderer.arrayRowStart += 1;
             positionUpdated = true;
         }
         if (RT.localPosition.y < (KMapRenderer.parentEndY -28))
         {
             y = (KMapRenderer.parentStartY  + (RT.localPosition.y - KMapRenderer.parentEndY+28) + (RT.sizeDelta.y - 28));
-            KMapRenderer.updateArrayRowStart -= 1;
+            KMapRenderer.arrayRowStart -= 1;
             positionUpdated = true;
         }
         RT.localPosition = new Vector3(x, y, 0);

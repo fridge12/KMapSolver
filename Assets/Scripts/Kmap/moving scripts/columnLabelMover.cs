@@ -33,13 +33,13 @@ public class columnLabelMover : MonoBehaviour
         if (RT.localPosition.x > KMapRenderer.parentEndX+50)
         {
             x = (KMapRenderer.parentStartX - RT.sizeDelta.x) + (RT.localPosition.x - KMapRenderer.parentEndX);
-            KMapRenderer.updateArrayColStart -= 1;
+            KMapRenderer.arrayColStart -= 1;
             positionUpdated = true;
         }
         if (RT.localPosition.x < (KMapRenderer.parentStartX - RT.sizeDelta.x)+50)
         {
             x = KMapRenderer.parentEndX + (RT.localPosition.x - (KMapRenderer.parentStartX - RT.sizeDelta.x));
-            KMapRenderer.updateArrayColStart += 1;
+            KMapRenderer.arrayColStart += 1;
 
             positionUpdated = true;
         }
