@@ -35,8 +35,8 @@ public class KMapRenderer : MonoBehaviour
     public static readonly int maxRows = 8;
 
     //number of columns and rows
-    public int columns;
-    public int rows;
+    public static int columns;
+    public static int rows;
 
     //size of cell
     Vector2 cellSize;
@@ -103,9 +103,9 @@ public class KMapRenderer : MonoBehaviour
         canMoveDown = canMoveLeft = canMoveRight = canMoveUp = true;
 
         if (arrayColStart < 0) canMoveRight = false;
-        if (arrayColStart + maxColumns > columns) canMoveLeft = false;
+        if (arrayColStart + maxColumns >= columns) canMoveLeft = false;
         if (arrayRowStart < 0) canMoveDown = false;
-        if (arrayRowStart + maxRows > rows) canMoveUp = false;
+        if (arrayRowStart + maxRows >= rows) canMoveUp = false;
 
         if (rows <= maxRows) canMoveDown = canMoveUp = false;
         if (columns <= maxColumns) canMoveRight = canMoveLeft = false;
@@ -133,7 +133,9 @@ public class KMapRenderer : MonoBehaviour
 
     public void initialise()
     {
-        Kmap.variables =8;
+        Kmap.variables =10;
+
+
         rows = (int)System.Math.Pow(2, (Kmap.variables / 2));
         columns = (int)System.Math.Pow(2, Kmap.variables - (Kmap.variables / 2));
 
@@ -169,7 +171,7 @@ public class KMapRenderer : MonoBehaviour
         GameObject ob = Instantiate(label, new Vector3(0, 0, 0), Quaternion.identity);
         ob.transform.SetParent(parent.transform.parent.transform);
         ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale / ScreenConstants.oldScale);
-        rowLabels[y] = ob;
+        rowLabels[y % System.Math.Min(rows, maxRows + 1)] = ob;
         ob.AddComponent<rowLabelMover>();
         ob.GetComponent<RectTransform>().localPosition = new Vector3(50-cellSize.x, (-y * cellSize.y)-28, 0);
         ob.GetComponent<Text>().text = ConstantVariables( calculateCoordinate(0, y) & 0xAAAAAAA);
@@ -181,14 +183,16 @@ public class KMapRenderer : MonoBehaviour
         GameObject ob = Instantiate(label, new Vector3(0, 0, 0), Quaternion.identity);
         ob.transform.SetParent(parent.transform.parent.transform);
         ob.GetComponent<RectTransform>().sizeDelta = cellSize * (ScreenConstants.scale / ScreenConstants.oldScale);
-        columnLabels[x] = ob;
+        columnLabels[x % System.Math.Min(columns, maxColumns + 1)] = ob;
         ob.AddComponent<columnLabelMover>();
         ob.GetComponent<RectTransform>().localPosition = new Vector3((x * cellSize.x)+50,  cellSize.y-28, 0);
         ob.GetComponent<Text>().text = ConstantVariables(calculateCoordinate(x,0) & 0x55555555);
         ob.GetComponent<Text>().alignment = TextAnchor.LowerCenter;
     }
 
-    public string ConstantVariables(int coordinate)
+    //TODO: fix the labels
+
+    public static string ConstantVariables(int coordinate)
     {
         System.Text.StringBuilder exp = new System.Text.StringBuilder("");
         
@@ -206,11 +210,11 @@ public class KMapRenderer : MonoBehaviour
         return exp.ToString();
     }
 
-    public int calculateCoordinate(int x, int y)
+    public static int calculateCoordinate(int x, int y)
     {
         int coordinate = 0;
         //n should be kmap.variables -1 but for testing its 4
-        for (int n = Kmap.variables + 2; n >= 0; n--)
+        for (int n = Kmap.variables ; n >= 0; n--)
         {
             if (n % 2 == 1)
             {
@@ -226,4 +230,27 @@ public class KMapRenderer : MonoBehaviour
         return coordinate;
     }
     
+    public static int[] calculateXY(int coordinate)
+    {
+            int x = 0;
+            int y = 0;
+            for (int n = Kmap.variables; n >= 0; n--)
+            {
+
+                //if(((m >> n) & 1) == 0) continue;
+
+                if (n % 2 == 1)
+                {
+                    y = (y << 1) + ((coordinate >> n) & 1);
+                }
+                else
+                {
+                    x = (x << 1) + ((coordinate >> n) & 1);
+                }
+
+            }
+        int[] a = { x, y };
+        return a;
+    }
+
 }

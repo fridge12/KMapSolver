@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class cellMover : MonoBehaviour
 {
@@ -36,7 +37,8 @@ public class cellMover : MonoBehaviour
 
          RT.localPosition = new Vector3(RT.localPosition.x + (KMapRenderer.cellVelocity.x ), RT.localPosition.y + (KMapRenderer.cellVelocity.y ), 0);
 
-        
+        int[] a = KMapRenderer.calculateXY(int.Parse(GetComponentsInChildren<Text>()[1].text));
+
 
         float y = RT.localPosition.y ;
         float x = RT.localPosition.x  ;
@@ -45,12 +47,16 @@ public class cellMover : MonoBehaviour
         {
             y =  KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f) +(RT.localPosition.y - (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f))) ;
             //KMapRenderer.updateArrayRowStart = 1;
+            a[1] += System.Math.Min(KMapRenderer.maxRows+1, KMapRenderer.rows);
+
             positionUpdated = true;
         }
         if (RT.localPosition.y < (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66)) )
         {
             y = (KMapRenderer.parentStartY + (RT.sizeDelta.y * 0.33f))+(RT.localPosition.y - (KMapRenderer.parentEndY - (RT.sizeDelta.y * 0.66f)));
             //KMapRenderer.updateArrayRowStart = -1;
+            a[1] -= System.Math.Min(KMapRenderer.maxRows+1, KMapRenderer.rows);
+
             positionUpdated = true;
         }
 
@@ -59,18 +65,22 @@ public class cellMover : MonoBehaviour
         {
             x = (KMapRenderer.parentStartX - RT.sizeDelta.x)+(RT.localPosition.x - KMapRenderer.parentEndX);
             //KMapRenderer.updateArrayColStart = -1;
+            a[0] -= System.Math.Min(KMapRenderer.maxColumns+1, KMapRenderer.columns); 
             positionUpdated = true;
         }
         if (RT.localPosition.x < (KMapRenderer.parentStartX - RT.sizeDelta.x) )
         {
             x = KMapRenderer.parentEndX +(RT.localPosition.x - (KMapRenderer.parentStartX - RT.sizeDelta.x));
             //KMapRenderer.updateArrayColStart = 1;
+            a[0] += System.Math.Min(KMapRenderer.maxColumns+1, KMapRenderer.columns);
 
             positionUpdated = true;
         }
 
-        
-            RT.localPosition = new Vector3(x , y, 0);
+
+        GetComponentsInChildren<Text>()[1].text= KMapRenderer.calculateCoordinate(a[0], a[1]).ToString();
+
+        RT.localPosition = new Vector3(x , y, 0);
         
     }
 }
