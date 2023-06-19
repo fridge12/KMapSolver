@@ -62,35 +62,10 @@ public class KMapRenderer : MonoBehaviour
     private void Start()
     {
         oldMousePosition = Input.mousePosition;
-        //rows = 4;
-        //columns = 4;
-        initialise();
+        
+        //initialise();
 
-        GameObject ob;
-        //cell.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
-        for (int i = 0; i < 128; i++)
-        {
-            //cellSpawner(i % columns, i / columns);
-            Debug.Log(i % columns);
-            Debug.Log(i / columns);
-        }
-
-        for(int i = 0; i < System.Math.Min(columns,maxColumns+1) ; i++)
-        {
-            for(int j = 0; j < System.Math.Min(rows, maxRows+1); j++)
-            {
-                cellSpawner(i,j);
-            }
-        }
-
-        for(int i = 0; i < rowLabels.Length; i++)
-        {
-            rowLabelSpawner(i);
-        }
-        for (int i = 0; i < columnLabels.Length; i++)
-        {
-            columnLabelSpawner(i);
-        }
+       
     }
 
     // Update is called once per frame
@@ -133,20 +108,89 @@ public class KMapRenderer : MonoBehaviour
 
     public void initialise()
     {
-        Kmap.variables =10;
-
+        //Kmap.variables =10;
+        clearAll();
 
         rows = (int)System.Math.Pow(2, (Kmap.variables / 2));
         columns = (int)System.Math.Pow(2, Kmap.variables - (Kmap.variables / 2));
 
-
         cellSize = new Vector2(System.Math.Abs(parentEndX-parentStartX) / (float)System.Math.Min(columns, maxColumns), System.Math.Abs(parentEndY - parentStartY)/ (float)System.Math.Min(rows, maxRows ));
-
-
-        KMapArray = new GameObject[System.Math.Min(rows, maxRows + 1), System.Math.Min(columns, maxColumns + 1)];
 
         columnLabels = new GameObject[System.Math.Min(columns, maxColumns + 1)];
         rowLabels = new GameObject[System.Math.Min(rows, maxRows + 1)];
+
+        KMapArray = new GameObject[System.Math.Min(rows, maxRows + 1), System.Math.Min(columns, maxColumns + 1)];
+
+        
+
+        spawnAllCells();
+    }
+    public void clearAll()
+    {
+        if (KMapArray == null) return; 
+
+        for (int i = 0; i < KMapArray.GetLength(0); i++)
+        {
+            for (int j = 0; j < KMapArray.GetLength(1); j++)
+            {
+
+                //if(KMapArray[i, j]!= null)
+                Destroy(KMapArray[i, j].GetComponent<cellResizer>());
+                Destroy(KMapArray[i, j].GetComponent<cellMover>());
+                clear(KMapArray[i, j].transform);
+            }
+        }
+
+        for (int i = 0; i < rowLabels.Length; i++)
+        {
+            //if(rowLabels[i] != null)
+            Destroy(rowLabels[i].GetComponent<rowLabelMover>());
+            clear(rowLabels[i].transform);
+        }
+        for (int i = 0; i < columnLabels.Length; i++)
+        {
+            //if(columnLabels[i]!= null)
+            Destroy(columnLabels[i].GetComponent<columnLabelMover>());
+            clear(columnLabels[i].transform);
+        }
+
+        Debug.Log("clearing over");
+    }
+
+    public void clear(Transform t)
+    {
+        while (t.childCount > 0)
+        {
+            DestroyImmediate(t.GetChild(0).gameObject);
+        }
+    }
+
+    public void spawnAllCells()
+    {
+       // for (int i = 0; i < 128; i++)
+        {
+            //cellSpawner(i % columns, i / columns);
+           // Debug.Log(i % columns);
+            //Debug.Log(i / columns);
+        }
+        //Debug.Log("spawning all cells");
+
+        for (int i = 0; i < System.Math.Min(columns, maxColumns + 1); i++)
+        {
+            for (int j = 0; j < System.Math.Min(rows, maxRows + 1); j++)
+            {
+                cellSpawner(i, j);
+            }
+        }
+
+        for (int i = 0; i < rowLabels.Length; i++)
+        {
+            rowLabelSpawner(i);
+        }
+        for (int i = 0; i < columnLabels.Length; i++)
+        {
+            columnLabelSpawner(i);
+        }
     }
 
     public void cellSpawner(int x, int y)
@@ -212,6 +256,18 @@ public class KMapRenderer : MonoBehaviour
 
     public static int calculateCoordinate(int x, int y)
     {
+        if(Kmap.variables == 4 || Kmap.variables == 3)
+        {
+            if (x == 2) x = 3;
+            else if (x == 3) x = 2;
+
+            if (y == 2) y = 3;
+            else if (y == 3) y = 2;
+
+            return (y * 4) + x;
+        }
+
+
         int coordinate = 0;
         //n should be kmap.variables -1 but for testing its 4
         for (int n = Kmap.variables ; n >= 0; n--)
@@ -249,6 +305,19 @@ public class KMapRenderer : MonoBehaviour
                 }
 
             }
+        if (Kmap.variables == 4 || Kmap.variables == 3)
+        {
+            y = coordinate / 4;
+            x = coordinate % 4;
+
+            if (x == 2) x = 3;
+            else if (x == 3) x = 2;
+
+            if (y == 2) y = 3;
+            else if (y == 3) y = 2;
+
+        }
+
         int[] a = { x, y };
         return a;
     }

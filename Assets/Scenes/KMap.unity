@@ -1810,8 +1810,6 @@ MonoBehaviour:
   cell: {fileID: 2350710465298725268, guid: 29ea4a3aae191704ea899ee70e53133c, type: 3}
   label: {fileID: 3692430469138734984, guid: 5fb15c1ee873e7c4bbc4461c20f60662, type: 3}
   parent: {fileID: 992994977}
-  columns: 16
-  rows: 8
 --- !u!1 &1068082398
 GameObject:
   m_ObjectHideFlags: 0
@@ -3067,6 +3065,7 @@ MonoBehaviour:
   Dropdown: {fileID: 1263820156}
   termsText: {fileID: 1068082398}
   ReducedExpressionOutput: {fileID: 64458370}
+  backgroundImage: {fileID: 992994977}
 --- !u!114 &1598807844
 MonoBehaviour:
   m_ObjectHideFlags: 0

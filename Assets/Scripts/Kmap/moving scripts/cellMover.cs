@@ -12,20 +12,31 @@ public class cellMover : MonoBehaviour
     void Start()
     {
         RT = GetComponent<RectTransform>();
+        number = GetComponentsInChildren<Text>()[0];
+        coordinate = GetComponentsInChildren<Text>()[1];
+        a = KMapRenderer.calculateXY(int.Parse(coordinate.text));
     }
 
     // Update is called once per frame
     void Update()
     {
-         updatePosition();
+        if (KMapRenderer.cellVelocity.x != 0 || KMapRenderer.cellVelocity.y != 0)
+        {
+            updatePosition();
+        }
     }
 
     private void OnRectTransformDimensionsChange()
     {
         ctr = 1000;
-        Debug.Log(ScreenConstants.scale+"cell mover");
+        Debug.Log(ScreenConstants.scale + "cell mover");
     }
 
+
+
+    Text number;
+    Text coordinate;
+    int[] a = {0,0 };
     void updatePosition()
     {
         //if (KMapRenderer.cellVelocity.Equals(new Vector2(0, 0))) return;
@@ -37,8 +48,7 @@ public class cellMover : MonoBehaviour
 
          RT.localPosition = new Vector3(RT.localPosition.x + (KMapRenderer.cellVelocity.x ), RT.localPosition.y + (KMapRenderer.cellVelocity.y ), 0);
 
-        int[] a = KMapRenderer.calculateXY(int.Parse(GetComponentsInChildren<Text>()[1].text));
-
+       
 
         float y = RT.localPosition.y ;
         float x = RT.localPosition.x  ;
@@ -78,7 +88,16 @@ public class cellMover : MonoBehaviour
         }
 
 
-        GetComponentsInChildren<Text>()[1].text= KMapRenderer.calculateCoordinate(a[0], a[1]).ToString();
+        coordinate.text= KMapRenderer.calculateCoordinate(a[0], a[1]).ToString();
+        if (a[0] < 0 || a[1] < 0) { 
+            coordinate.gameObject.SetActive(false);
+            number.gameObject.SetActive(false);
+        }
+
+        else { 
+            coordinate.gameObject.SetActive(true);
+            number.gameObject.SetActive(true);
+        }
 
         RT.localPosition = new Vector3(x , y, 0);
         

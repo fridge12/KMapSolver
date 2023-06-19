@@ -36,6 +36,10 @@ public class Kmap : MonoBehaviour
 
     //text object in which the final reduced expression will be displayed
     public GameObject ReducedExpressionOutput;
+
+
+    public GameObject backgroundImage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -96,6 +100,13 @@ public class Kmap : MonoBehaviour
         ReducedExpressionOutput.GetComponent<Text>().text = reducedExpression();
         watch.Stop();
         Debug.Log("time reduced" + watch.ElapsedMilliseconds);
+
+        watch.Reset();
+        watch.Restart();
+        backgroundImage.GetComponent<KMapRenderer>().initialise();
+        watch.Stop();
+        Debug.Log("time drawing kmap" + watch.ElapsedMilliseconds);
+    
     }
 
     //this method takes input for both the number of variables and the terms of the kmap
