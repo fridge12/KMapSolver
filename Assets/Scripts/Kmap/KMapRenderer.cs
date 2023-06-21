@@ -140,13 +140,14 @@ public class KMapRenderer : MonoBehaviour
                 clear(KMapArray[i, j].transform);
             }
         }
-
+        
         for (int i = 0; i < rowLabels.Length; i++)
         {
             //if(rowLabels[i] != null)
             Destroy(rowLabels[i].GetComponent<rowLabelMover>());
             clear(rowLabels[i].transform);
         }
+        
         for (int i = 0; i < columnLabels.Length; i++)
         {
             //if(columnLabels[i]!= null)
@@ -163,6 +164,7 @@ public class KMapRenderer : MonoBehaviour
         {
             DestroyImmediate(t.GetChild(0).gameObject);
         }
+        DestroyImmediate(t.gameObject);
     }
 
     public void spawnAllCells()
