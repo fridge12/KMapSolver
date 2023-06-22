@@ -13,8 +13,8 @@ public class cellMover : MonoBehaviour
     {
         RT = GetComponent<RectTransform>();
         number = GetComponentsInChildren<Text>()[0];
-        coordinate = GetComponentsInChildren<Text>()[1];
-        a = KMapRenderer.calculateXY(int.Parse(coordinate.text));
+        coordinateText = GetComponentsInChildren<Text>()[1];
+        a = KMapRenderer.calculateXY(int.Parse(coordinateText.text));
     }
 
     // Update is called once per frame
@@ -35,8 +35,11 @@ public class cellMover : MonoBehaviour
 
 
     Text number;
-    Text coordinate;
+    Text coordinateText;
     int[] a = {0,0 };
+    Group g = new Group(0, 0);
+    GroupComparer gc = new GroupComparer();
+
     void updatePosition()
     {
         //if (KMapRenderer.cellVelocity.Equals(new Vector2(0, 0))) return;
@@ -87,15 +90,23 @@ public class cellMover : MonoBehaviour
             positionUpdated = true;
         }
 
+        uint coordinate = KMapRenderer.calculateCoordinate(a[0], a[1]);
+        g.coordinate = coordinate;
+        if (Kmap.groupsList.BinarySearch(g, gc) >= 0)
+            number.text = "1";
+        else
+            number.text = "";
 
-        coordinate.text= KMapRenderer.calculateCoordinate(a[0], a[1]).ToString();
+        coordinateText.text = coordinate + "";
+
+
         if (a[0] < 0 || a[1] < 0) { 
-            coordinate.gameObject.SetActive(false);
+            coordinateText.gameObject.SetActive(false);
             number.gameObject.SetActive(false);
         }
 
         else { 
-            coordinate.gameObject.SetActive(true);
+            coordinateText.gameObject.SetActive(true);
             number.gameObject.SetActive(true);
         }
 

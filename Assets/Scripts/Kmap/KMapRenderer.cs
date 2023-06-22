@@ -42,7 +42,7 @@ public class KMapRenderer : MonoBehaviour
     Vector2 cellSize;
 
     //holds the velocity of the cells
-    public static Vector2 cellVelocity = new Vector2(-0,-0);
+    public static Vector2 cellVelocity = new Vector2(0,0);
 
 
     public static int arrayRowStart=0;
@@ -110,6 +110,14 @@ public class KMapRenderer : MonoBehaviour
     {
         //Kmap.variables =10;
         clearAll();
+
+        canMoveUp = true;
+        canMoveDown = false;
+        canMoveLeft = true;
+        canMoveRight = false;
+
+        arrayRowStart = 0;
+        arrayColStart = 0;
 
         rows = (int)System.Math.Pow(2, (Kmap.variables / 2));
         columns = (int)System.Math.Pow(2, Kmap.variables - (Kmap.variables / 2));
@@ -195,6 +203,8 @@ public class KMapRenderer : MonoBehaviour
         }
     }
 
+    Group g = new Group(0, 0);
+    GroupComparer gc = new GroupComparer();
     public void cellSpawner(int x, int y)
     {
 
@@ -206,8 +216,19 @@ public class KMapRenderer : MonoBehaviour
         KMapArray[y% System.Math.Min(rows, maxRows + 1), x % System.Math.Min(columns, maxColumns + 1)] = ob;
 
         ob.GetComponent<RectTransform>().localPosition = new Vector3(x * cellSize.x, (-y * cellSize.y)-(cellSize.y *0.66f), 0);
-        int coordinate = calculateCoordinate(x,y);
+        uint coordinate = calculateCoordinate(x,y);
 
+
+        g.coordinate = coordinate;
+        if(Kmap.groupsList.BinarySearch(g,gc) >= 0)
+        {
+            ob.GetComponentsInChildren<Text>()[0].text = "1";
+        }
+        else
+        {
+            ob.GetComponentsInChildren<Text>()[0].text = "";
+
+        }
 
         ob.GetComponentsInChildren<Text>()[1].text = coordinate+"";
     }
@@ -238,7 +259,7 @@ public class KMapRenderer : MonoBehaviour
 
     //TODO: fix the labels
 
-    public static string ConstantVariables(int coordinate)
+    public static string ConstantVariables(uint coordinate)
     {
         System.Text.StringBuilder exp = new System.Text.StringBuilder("");
         
@@ -256,7 +277,7 @@ public class KMapRenderer : MonoBehaviour
         return exp.ToString();
     }
 
-    public static int calculateCoordinate(int x, int y)
+    public static uint calculateCoordinate(int x, int y)
     {
         if(Kmap.variables == 4 || Kmap.variables == 3)
         {
@@ -266,21 +287,21 @@ public class KMapRenderer : MonoBehaviour
             if (y == 2) y = 3;
             else if (y == 3) y = 2;
 
-            return (y * 4) + x;
+            return (uint)((y * 4) + x);
         }
 
 
-        int coordinate = 0;
+        uint coordinate = 0;
         //n should be kmap.variables -1 but for testing its 4
         for (int n = Kmap.variables ; n >= 0; n--)
         {
             if (n % 2 == 1)
             {
-                coordinate = (((y >> (n / 2)) & 1) << n) + coordinate;
+                coordinate = (uint)((((y >> (n / 2)) & 1) << n) + coordinate);
             }
             else
             {
-                coordinate = (((x >> (n / 2)) & 1) << n) + coordinate;
+                coordinate = (uint)((((x >> (n / 2)) & 1) << n) + coordinate);
 
             }
         }
