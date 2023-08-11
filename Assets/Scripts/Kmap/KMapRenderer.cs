@@ -222,7 +222,9 @@ public class KMapRenderer : MonoBehaviour
         g.coordinate = coordinate;
         if(Kmap.groupsList.BinarySearch(g,gc) >= 0)
         {
-            ob.GetComponentsInChildren<Text>()[0].text = "1";
+
+            if (Kmap.SOP_POS == "SOP") ob.GetComponentsInChildren<Text>()[0].text = "1";
+            else ob.GetComponentsInChildren<Text>()[0].text = "0";
         }
         else
         {

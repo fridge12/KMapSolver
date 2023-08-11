@@ -93,7 +93,9 @@ public class cellMover : MonoBehaviour
         uint coordinate = KMapRenderer.calculateCoordinate(a[0], a[1]);
         g.coordinate = coordinate;
         if (Kmap.groupsList.BinarySearch(g, gc) >= 0)
-            number.text = "1";
+
+            if(Kmap.SOP_POS == "SOP") number.text = "1";
+            else number.text = "0";
         else
             number.text = "";
 
@@ -101,6 +103,11 @@ public class cellMover : MonoBehaviour
 
 
         if (a[0] < 0 || a[1] < 0) { 
+            coordinateText.gameObject.SetActive(false);
+            number.gameObject.SetActive(false);
+        }
+        else if( a[1]> System.Math.Pow(2,Kmap.variables/2)-1 || a[0] > System.Math.Pow(2,Kmap.variables- (Kmap.variables / 2))-1)
+        {
             coordinateText.gameObject.SetActive(false);
             number.gameObject.SetActive(false);
         }
