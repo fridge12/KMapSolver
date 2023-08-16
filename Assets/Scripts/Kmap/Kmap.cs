@@ -22,6 +22,12 @@ public class Kmap : MonoBehaviour
 
     public static string SOP_POS ="";
 
+    public static int numberOfTerms = 0;
+
+    public static int numberOfGroups = 0;
+
+    public static int numberOfGroupsWithoutAssignedColour = 0;
+
     //this is the input field where the coordinates are inputed
     public GameObject CoordinatesInput;
 
@@ -75,6 +81,7 @@ public class Kmap : MonoBehaviour
 
         //taking and sorting inputs
         inputs();
+        numberOfTerms = groupsList.Count;
         watch.Stop();
         Debug.Log("time input"+ watch.ElapsedMilliseconds);
 
@@ -85,6 +92,11 @@ public class Kmap : MonoBehaviour
         watch.Stop();
         Debug.Log("time pairs" + watch.ElapsedMilliseconds);
 
+        //number of groups with more than 1 term, this will count redundant groups, but it'll be faster and I don't care enough to actually fix it
+        numberOfGroups = groupsList.Count - numberOfTerms;
+        numberOfGroupsWithoutAssignedColour = numberOfGroups;
+
+        Debug.Log("numbers redundant" + numberOfTerms + " " + numberOfGroups + " " + numberOfGroupsWithoutAssignedColour + " " + groupsList.Count);
 
         watch.Reset();
         watch.Restart();
@@ -330,20 +342,23 @@ public class Kmap : MonoBehaviour
 
             //a single is not redundant
             if (BitOperations.countSetBits(g.direction) == 0) continue;
-
+            //todo add border colour
+            
+            
             //if group is redundant deleting it
             if (g.isRedundant())
             {
-                
+
                 //Debug.Log("found redundant");
                 //g.printGroup();
-                
+
                 //deleting group and updating the size and index to match
                 groupsList.RemoveAt(index);
                 size--;
                 index--;
             }
-
+            
+            numberOfGroupsWithoutAssignedColour--;
         }
         //Debug.Log("groups list after removing redundant groups");
         //printGroupsList();

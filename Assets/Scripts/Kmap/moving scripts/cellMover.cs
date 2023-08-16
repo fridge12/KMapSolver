@@ -92,10 +92,14 @@ public class cellMover : MonoBehaviour
 
         uint coordinate = KMapRenderer.calculateCoordinate(a[0], a[1]);
         g.coordinate = coordinate;
-        if (Kmap.groupsList.BinarySearch(g, gc) >= 0)
 
-            if(Kmap.SOP_POS == "SOP") number.text = "1";
+        int pos = Kmap.groupsList.BinarySearch(g, gc);
+        if ( pos >= 0)
+        {
+            number.GetComponent<Outline>().effectColor = Kmap.groupsList[pos].borderColour;
+            if (Kmap.SOP_POS == "SOP") number.text = "1";
             else number.text = "0";
+        }
         else
             number.text = "";
 

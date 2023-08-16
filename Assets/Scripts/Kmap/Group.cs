@@ -23,14 +23,23 @@ public class Group
     //number of bigger groups this group is a part of
     public uint biggerGroups;
 
+    public Color borderColour;
+
+    public Color previousBorderColour = Color.black;
 
     //this is the base constructor if I don't use subgroups
-    public Group(uint coordinate, uint direction,uint biggerGroups)
+    public Group(uint coordinate, uint direction,uint biggerGroups, Color borderColour)
     {
         this.coordinate = coordinate;
         this.direction = direction;
         this.biggerGroups = biggerGroups;
+        this.borderColour = borderColour;
+
     }
+
+    public Group(uint coordinate, uint direction, uint biggerGroups) : this(coordinate, direction, biggerGroups, new Color32())
+    { }
+
     //if I don't use subgroups, I will use this to create a new Group
     public Group(uint coordinate, uint direction) : this(coordinate, direction, 0)
     {
@@ -97,6 +106,7 @@ public class Group
 
     public bool isRedundant()
     {
+        bool returnVal = true ; 
         if (toPrint) Debug.Log("in isRedundant");
         //printGroup();
 
@@ -126,8 +136,16 @@ public class Group
             //Debug.Log(BitOperations.printBits(groupSearch.coordinate));
             if (toPrint) Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].printGroup();
             //if any term is not a part of another bigger group then it means this group is not redundant 
-            if (Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups <= 1)return false; 
+
+            Group g = Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)];
+            g.borderColour = Color.HSVToRGB(((float)Kmap.numberOfGroupsWithoutAssignedColour / (float)Kmap.numberOfGroups), 1, 1, true);
+            if (g.previousBorderColour.Equals(Color.black)) g.previousBorderColour = g.borderColour;            
+
+            Debug.Log("colour");
+            Debug.Log(g.borderColour);
+            if (g.biggerGroups <= 1)returnVal = false; 
         }
+        if (!returnVal) return false;
         //if it reaches till here, it means that the group is redundant and will be deleted
         //if the group is deleted all the terms will be a part of 1 less bigger group
         //the function updates all the terms, and reduces the bigger groups they are a part of
@@ -145,7 +163,7 @@ public class Group
 
         Group groupSearch = new Group(0, 0);
         GroupComparer GC = new GroupComparer();
-
+        Group g;
         
         uint currentDirection = direction;
         //loops as many times as there are terms in the group
@@ -155,9 +173,22 @@ public class Group
             groupSearch.coordinate = coordinate | currentDirection;
             //Debug.Log(BitOperations.printBits(groupSearch.coordinate));
 
+
+            g = Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)];
             //updating the number of bigger groups the term is a part of
-           if(val< 0) Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups -= (uint)System.Math.Abs(val);
-           else Kmap.groupsList[Kmap.groupsList.BinarySearch(groupSearch, GC)].biggerGroups += (uint)System.Math.Abs(val);
+            if (val < 0)
+            {
+                g.borderColour = g.previousBorderColour;
+                //previousBorderColour = Color.black;
+                //g.borderColour = insert border colour here
+                g.biggerGroups -= (uint)System.Math.Abs(val);
+            }
+            else
+            {
+                //g.borderColour = insert border colour here
+                g.biggerGroups += (uint)System.Math.Abs(val);
+            }
+            
         }
         //Debug.Log("groups list aftre updating bigger groups");
         //Kmap.printGroupsList();
@@ -189,4 +220,6 @@ public class Group
         Debug.Log(coordinate + " " + BitOperations.printBits(direction) + " "+ biggerGroups);
     }
     
+    
+
 }
